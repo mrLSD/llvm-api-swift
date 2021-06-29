@@ -1,6 +1,11 @@
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+.idea/
+.swiftpm/
+
+# Exclude for the Library
+Package.resolved 
 
 ## User settings
 xcuserdata/
