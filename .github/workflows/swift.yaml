@@ -14,6 +14,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
+    - name: clang version
+      run: clang --version
+    - name: swift version
+      run: swift --version
     - name: Build
       run: swift build -v
 #    - name: Run tests
