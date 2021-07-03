@@ -14,10 +14,15 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - name: clang version
-      run: clang --version
-    - name: swift version
+    - uses: swift-actions/setup-swift@v1
+    - name: Get swift version
       run: swift --version
+    - name: Brew
+      run: |
+        brew update
+        brew install llvm@17
+        clang --version
+
     - name: Build
       run: swift build -v
 #    - name: Run tests

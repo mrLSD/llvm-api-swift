@@ -21,23 +21,23 @@ import CLLVM
 /// does not associate it with a function.
 ///
 ///     let module = Module(name: "Example")
-///     let fun = builder.addFunction("example",
+///     let func = builder.addFunction("example",
 ///                                   type: FunctionType([], VoidType()))
 ///
 ///     // This basic block is "floating" outside of a function.
 ///     let floatingBB = BasicBlock(name: "floating")
 ///     // Until we associate it with a function by calling `Function.append(_:)`.
-///     fun.append(floatingBB)
+///     func.append(floatingBB)
 ///
 /// A basic block may be created and automatically inserted at the end of a
-/// function by calling `Function.appendBasicBlock(named:in:)`.
+/// function by calling `Function.appendBasicBlock()`.
 ///
 ///     let module = Module(name: "Example")
-///     let fun = builder.addFunction("example",
+///     let func = builder.addFunction("example",
 ///                                   type: FunctionType([], VoidType()))
 ///
 ///     // This basic block is "attached" to the example function.
-///     let attachedBB = fun.appendBasicBlock(named: "attached")
+///     let attachedBB = func.appendBasicBlock(named: "attached")
 ///
 /// The Address of a Basic Block
 /// ============================
@@ -70,18 +70,21 @@ import CLLVM
 public struct BasicBlock: BasicBlockRef {
     let llvm: LLVMBasicBlockRef
 
+    /// Retrieves the underlying LLVM value object.
+    public var basicBlockRef: LLVMBasicBlockRef { llvm }
+
     /// Creates a `BasicBlock` from an `LLVMBasicBlockRef` object.
     public init(llvm: LLVMBasicBlockRef) {
         self.llvm = llvm
     }
 
-//    /// Creates a new basic block without a parent function.
-//    ///
-//    /// The basic block should be inserted into a function or destroyed before
-//    /// the IR builder is finalized.
-//    public init(context: Context = .global, name: String = "") {
-//        self.llvm = LLVMCreateBasicBlockInContext(context.llvm, name)
-//    }
+    /// Create a new basic block without inserting it into a function.
+    ///
+    /// The basic block should be inserted into a function or destroyed before
+    /// the IR builder is finalized.
+    public init(context: ContextRef, name: String) {
+        self.llvm = LLVMCreateBasicBlockInContext(context.contextRef, name)
+    }
 
     /// Given that this block and a given block share a parent function, move this
     /// block before the given block in that function's basic block list.
@@ -100,9 +103,6 @@ public struct BasicBlock: BasicBlockRef {
     public func moveBasicBlockAfter(after position: BasicBlock) {
         LLVMMoveBasicBlockAfter(basicBlockRef, position.basicBlockRef)
     }
-
-    /// Retrieves the underlying LLVM value object.
-    public var basicBlockRef: LLVMBasicBlockRef { llvm }
 
     /// Retrieves the name of this basic block.
     public var getBasicBlockName: String {
