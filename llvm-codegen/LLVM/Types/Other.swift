@@ -1,7 +1,7 @@
 
 import CLLVM
 
-public struct OtherType {
+public struct OtherType: TypeRef {
     let llvm: LLVMTypeRef
 
     /// Retrieves the underlying LLVM value object.
@@ -29,16 +29,6 @@ public struct OtherType {
     /// Create a token type in a context.
     public func tokenTypeInContext(context: ContextRef) -> OtherType {
         OtherType(llvm: LLVMTokenTypeInContext(context.contextRef))
-    }
-
-    /// These are similar to the above functions except they operate on the global context.
-    public func voidType() -> OtherType {
-        OtherType(llvm: LLVMVoidType())
-    }
-
-    /// Create a void type in a context.
-    public func voidTypeInContext(context: ContextRef) -> OtherType {
-        OtherType(llvm: LLVMVoidTypeInContext(context.contextRef))
     }
 
     public func x86AMXType()

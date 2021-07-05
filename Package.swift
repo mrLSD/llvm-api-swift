@@ -37,5 +37,5 @@ let package = Package(
             path: "llvm-codegen/LLVM"
         )
     ],
-    cxxLanguageStandard: .cxx17
+    cxxLanguageStandard: .cxx20
 )
