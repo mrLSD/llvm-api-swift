@@ -21,6 +21,10 @@ jobs:
       run: |
         brew update
         brew install llvm@17
+        echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
+        echo 'export LDFLAGS="-L/usr/local/opt/llvm/lib"' >> /Users/runner/.bash_profile
+        echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
+        source /Users/runner/.bash_profile
         clang --version
 
     - name: Build
