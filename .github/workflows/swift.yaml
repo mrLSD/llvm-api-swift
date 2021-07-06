@@ -17,7 +17,7 @@ jobs:
     - uses: swift-actions/setup-swift@v1
     - name: Get swift version
       run: swift --version
-    - name: Brew
+    - name: Pre-install
       run: |
         brew update
         brew install llvm@17
@@ -26,6 +26,7 @@ jobs:
         echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
         source /Users/runner/.bash_profile
         clang --version
+        swift utils/make-pkg-config.swift
 
     - name: Build
       run: swift build -v
