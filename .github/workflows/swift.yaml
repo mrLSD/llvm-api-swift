@@ -15,8 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@v1
-    - name: Get swift version
-      run: swift --version
     - name: Pre-install
       run: |
         brew update
@@ -26,6 +24,7 @@ jobs:
         echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
         source /Users/runner/.bash_profile
         clang --version
+        swift --version
         swift utils/make-pkg-config.swift
 
     - name: Build

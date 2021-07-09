@@ -1,16 +1,30 @@
 import CLLVM
 
+/// The `Void` type represents empty value and has no size.
 public struct VoidType: TypeRef {
-    let llvm: LLVMTypeRef
+    private let llvm: LLVMTypeRef
+
+    /// Returns the context associated with this type.
+    public let context: Context?
+
+    /// Retrieves the underlying LLVM type object.
     public var typeRef: LLVMTypeRef { llvm }
 
-    /// Operate on the global context.
+    /// Creates an instance of the `Void` type  on the global context.
     public init() {
-        self.llvm = LLVMVoidType()
+        llvm = LLVMVoidType()
+        context = nil
     }
 
-    /// Create a void type in a context.
-    public init(context: ContextRef) {
-        self.llvm = LLVMVoidTypeInContext(context.contextRef)
+    /// Creates an instance of the `Void` type  in the  context.
+    public init(in context: Context) {
+        llvm = LLVMVoidTypeInContext(context.contextRef)
+        self.context = context
+    }
+}
+
+extension VoidType: Equatable {
+    public static func == (lhs: VoidType, rhs: VoidType) -> Bool {
+        return lhs.typeRef == rhs.typeRef
     }
 }
