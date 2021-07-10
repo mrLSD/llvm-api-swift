@@ -12,15 +12,6 @@ public struct OtherType: TypeRef {
         self.llvm = llvm
     }
 
-    public func labelType() -> OtherType {
-        OtherType(llvm: LLVMLabelType())
-    }
-
-    /// Create a label type in a context.
-    public func labelTypeInContext(context: ContextRef) -> OtherType {
-        OtherType(llvm: LLVMLabelTypeInContext(context.contextRef))
-    }
-
     /// Create a metadata type in a context.
     public func metadataTypeInContext(context: ContextRef) -> OtherType {
         OtherType(llvm: LLVMMetadataTypeInContext(context.contextRef))

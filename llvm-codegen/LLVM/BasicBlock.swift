@@ -68,7 +68,10 @@ import CLLVM
 ///   static `alloca` values in the entry block to more efficiently reference
 ///   them from the base pointer of the stack frame.
 public struct BasicBlock: BasicBlockRef {
-    let llvm: LLVMBasicBlockRef
+    private let llvm: LLVMBasicBlockRef
+
+    /// `BasicBlock` context
+    public let context: Context?
 
     /// Retrieves the underlying LLVM value object.
     public var basicBlockRef: LLVMBasicBlockRef { llvm }
@@ -76,14 +79,16 @@ public struct BasicBlock: BasicBlockRef {
     /// Creates a `BasicBlock` from an `LLVMBasicBlockRef` object.
     public init(llvm: LLVMBasicBlockRef) {
         self.llvm = llvm
+        context = nil
     }
 
     /// Create a new basic block without inserting it into a function.
     ///
     /// The basic block should be inserted into a function or destroyed before
     /// the IR builder is finalized.
-    public init(context: ContextRef, name: String) {
-        self.llvm = LLVMCreateBasicBlockInContext(context.contextRef, name)
+    public init(context: Context, name: String) {
+        llvm = LLVMCreateBasicBlockInContext(context.contextRef, name)
+        self.context = context
     }
 
     /// Given that this block and a given block share a parent function, move this
