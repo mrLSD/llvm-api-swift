@@ -22,30 +22,6 @@ public struct OtherType: TypeRef {
         OtherType(llvm: LLVMTokenTypeInContext(context.contextRef))
     }
 
-    public func x86AMXType()
-        -> OtherType
-    {
-        OtherType(llvm: LLVMX86AMXType())
-    }
-
-    /// Create a X86 AMX type in a context.
-    public func x86AMXTypeInContext(context: ContextRef)
-        -> OtherType
-    {
-        OtherType(llvm: LLVMX86AMXTypeInContext(context.contextRef))
-    }
-
-    public func x86MMXType()
-        -> OtherType
-    {
-        OtherType(llvm: LLVMX86MMXType())
-    }
-
-    /// Create a X86 MMX type in a context.
-    public func x86MMXTypeInContext(context: ContextRef) -> OtherType {
-        OtherType(llvm: LLVMX86MMXTypeInContext(context.contextRef))
-    }
-
     //    /// Create a target extension type in LLVM context.
     //    public func targetExtTypeInContext(context: ContextRef, name: String, typeParams:  TypeRef,  typeParamCount: UInt32, intParams:  [UInt32]?,  intParamCount: UInt32) -> OtherType
     //    {
