@@ -12,16 +12,6 @@ public struct OtherType: TypeRef {
         self.llvm = llvm
     }
 
-    /// Create a metadata type in a context.
-    public func metadataTypeInContext(context: ContextRef) -> OtherType {
-        OtherType(llvm: LLVMMetadataTypeInContext(context.contextRef))
-    }
-
-    /// Create a token type in a context.
-    public func tokenTypeInContext(context: ContextRef) -> OtherType {
-        OtherType(llvm: LLVMTokenTypeInContext(context.contextRef))
-    }
-
     //    /// Create a target extension type in LLVM context.
     //    public func targetExtTypeInContext(context: ContextRef, name: String, typeParams:  TypeRef,  typeParamCount: UInt32, intParams:  [UInt32]?,  intParamCount: UInt32) -> OtherType
     //    {

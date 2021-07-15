@@ -1,7 +1,9 @@
 import CLLVM
 
-/// `LabelType` represents code labels.
-public struct LabelType: TypeRef {
+/// `TokenType` is used when a value is associated with an instruction but all
+/// uses of the value must not attempt to introspect or obscure it. As such, it
+/// is not appropriate to have a `PHI` or `select` of type `TokenType`.
+public struct TokenType: TypeRef {
     private let llvm: LLVMTypeRef
 
     /// Returns the context associated with this type.
@@ -10,22 +12,15 @@ public struct LabelType: TypeRef {
     /// Retrieves the underlying LLVM type object.
     public var typeRef: LLVMTypeRef { llvm }
 
-    /// Creates an instance of the `Label` type  on the global context.
-    public init() {
-        llvm = LLVMLabelType()
-        context = nil
-    }
-
-    /// Creates an instance of the `Label` type  in the  context.
+    /// Creates an instance of the `Token` type  in the  context.
     public init(in context: Context) {
-        llvm = LLVMLabelTypeInContext(context.contextRef)
+        llvm = LLVMTokenTypeInContext(context.contextRef)
         self.context = context
     }
 }
 
-extension LabelType: Equatable {
-    public static func == (lhs: LabelType, rhs: LabelType) -> Bool {
+extension TokenType: Equatable {
+    public static func == (lhs: TokenType, rhs: TokenType) -> Bool {
         return lhs.typeRef == rhs.typeRef
     }
 }
-
