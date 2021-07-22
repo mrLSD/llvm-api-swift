@@ -157,30 +157,40 @@ public enum TypeKind {
     }
 }
 
-public struct Types {
+public struct Types: TypeRef {
+    let llvm: LLVMTypeRef
+
+    /// Retrieves the underlying LLVM type object.
+    public var typeRef: LLVMTypeRef { llvm }
+
+    /// Init `Types` by `TypeRef`
+    public init(llvm: TypeRef) {
+        self.llvm = llvm.typeRef
+    }
+
     /// Obtain the enumerated type of a Type instance.
-    public func getTypeKind(ty: TypeRef) -> TypeKind {
-        return TypeKind(ty: LLVMGetTypeKind(ty.typeRef))!
+    public var getTypeKind: TypeKind {
+        TypeKind(ty: LLVMGetTypeKind(typeRef))!
     }
 
     /// Whether the type has a known size.
-    public func typeIsSized(ty: TypeRef) -> Bool {
-        LLVMTypeIsSized(ty.typeRef) != 0
+    public var typeIsSized: Bool {
+        LLVMTypeIsSized(typeRef) != 0
     }
 
     /// Obtain the context to which this type instance is associated.
-    public func getTypeContext(ty: TypeRef) -> LLVMContextRef {
-        LLVMGetTypeContext(ty.typeRef)
+    public var getTypeContext: Context {
+        Context(llvm: LLVMGetTypeContext(typeRef))
     }
 
     /// Dump a representation of a type to stderr.
-    public func dumpType(ty: TypeRef) {
-        LLVMDumpType(ty.typeRef)
+    public func dumpType() {
+        LLVMDumpType(typeRef)
     }
 
     /// Return a string representation of the type.
-    public func printTypeToString(ty: TypeRef) -> String {
-        let cstring = LLVMPrintTypeToString(ty.typeRef)
+    public func printTypeToString() -> String {
+        let cstring = LLVMPrintTypeToString(typeRef)
         return String(cString: cstring!)
     }
 }
