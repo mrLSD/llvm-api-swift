@@ -14,10 +14,11 @@ public class FunctionType: TypeRef {
     public var typeRef: LLVMTypeRef { llvm }
 
     /// For parent classes init with predefined `FunctionType` in Context
-    public init(returnType: TypeRef, parameterTypes: [TypeRef], isVariadic: Bool) {
+    public init(returnType: TypeRef, parameterTypes: [TypeRef], isVariadic: Bool = false) {
         var mutableParamTypes = parameterTypes.map { $0.typeRef as Optional }
-        let ptrParamTypes = mutableParamTypes.withUnsafeMutableBufferPointer { paramsBuffer in paramsBuffer.baseAddress }
-        self.llvm = LLVMFunctionType(returnType.typeRef, ptrParamTypes, UInt32(mutableParamTypes.count), Int32(isVariadic ? 1 : 0))!
+        self.llvm = mutableParamTypes.withUnsafeMutableBufferPointer { paramsBuffer in
+            LLVMFunctionType(returnType.typeRef, paramsBuffer.baseAddress, UInt32(parameterTypes.count), Int32(isVariadic ? 1 : 0))!
+        }
         self.returnType = returnType
         self.parameterTypes = parameterTypes
         self.isVariadic = isVariadic
@@ -40,12 +41,17 @@ public class FunctionType: TypeRef {
     }
 
     /// Get the types of a function's parameters.
-    public static func getParamTypes(funcType: TypeRef) {
+    public static func getParamTypes(funcType: TypeRef) -> [LLVMTypeRef?] {
         // The Dest parameter should point to a pre-allocated array of
         // LLVMTypeRef at least LLVMCountParamTypes() large. On return, the
         // first LLVMCountParamTypes() entries in the array will be populated
         // with LLVMTypeRef instances.
-        // LLVMGetParamTypes(funcType.typeRef)
+        let count = Int(LLVMCountParamTypes(funcType.typeRef))
+        var paramTypes = [LLVMTypeRef?](repeating: nil, count: count)
+        paramTypes.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMGetParamTypes(funcType.typeRef, bufferPointer.baseAddress)
+        }
+        return paramTypes
     }
 }
 

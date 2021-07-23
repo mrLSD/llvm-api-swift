@@ -14,14 +14,17 @@ public struct TargetExtType: TypeRef {
     public init(in context: Context, name: String, typeParams: [TypeRef], intParams: [UInt32]) {
         var mutableTypeParams = typeParams.map { $0.typeRef as Optional }
         var mutableIntParams = intParams
-        let cName = name.withCString { cName in cName }
-        let ptrTypeParams = mutableTypeParams.withUnsafeMutableBufferPointer { typeParamsBuffer in typeParamsBuffer.baseAddress }
-        let ptrIntParams = mutableIntParams.withUnsafeMutableBufferPointer { intParamsBuffer in intParamsBuffer.baseAddress }
-        self.llvm = LLVMTargetExtTypeInContext(context.contextRef, cName,
-                                          ptrTypeParams,
-                                          UInt32(typeParams.count),
-                                          ptrIntParams,
-                                          UInt32(intParams.count))!
+        self.llvm = name.withCString { cName in
+            mutableTypeParams.withUnsafeMutableBufferPointer { typeParamsBuffer in
+                mutableIntParams.withUnsafeMutableBufferPointer { intParamsBuffer in
+                    LLVMTargetExtTypeInContext(context.contextRef, cName,
+                                               typeParamsBuffer.baseAddress,
+                                               UInt32(typeParams.count),
+                                               intParamsBuffer.baseAddress,
+                                               UInt32(intParams.count))!
+                }
+            }
+        }
         self.context = context
     }
 }
