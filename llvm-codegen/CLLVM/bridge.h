@@ -13,10 +13,9 @@
 #include <llvm-c/BitReader.h>
 #include <llvm-c/BitWriter.h>
 #include <llvm-c/Comdat.h>
-#include <llvm-c/Core.h>
+    #include <llvm-c/Core.h>
 #include <llvm-c/DataTypes.h>
 #include <llvm-c/DebugInfo.h>
-#include <llvm-c/Deprecated.h>
 #include <llvm-c/Disassembler.h>
 #include <llvm-c/DisassemblerTypes.h>
 #include <llvm-c/Error.h>
