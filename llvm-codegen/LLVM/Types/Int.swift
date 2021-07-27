@@ -58,6 +58,10 @@ public class Int1Type: IntType {
     public init(in context: Context) {
         super.init(typeRef: LLVMInt1TypeInContext(context.contextRef), context: context)
     }
+
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// `Int8Type` int type with 8-bits
@@ -126,7 +130,7 @@ public class Int128Type: IntType {
 }
 
 extension IntType: Equatable {
-  public static func == (lhs: IntType, rhs: IntType) -> Bool {
-    return lhs.typeRef == rhs.typeRef
-  }
+    public static func == (lhs: IntType, rhs: IntType) -> Bool {
+        return lhs.typeRef == rhs.typeRef
+    }
 }

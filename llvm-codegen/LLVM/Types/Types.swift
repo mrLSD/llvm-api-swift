@@ -90,6 +90,19 @@ public protocol TypeRef {
     var typeRef: LLVMTypeRef { get }
 }
 
+public extension TypeRef {
+    /// Get concrete type in their Context.
+    /// For the result can be applied operations: `is`, `as?`, `as!`
+    var getConcreteTypeInContext: TypeRef {
+        let ty = Types(llvm: self)
+        return switch ty.getTypeKind {
+        case .integerTypeKind:
+            Int1Type(typeRef: self, context: ty.getTypeContext)
+        default: fatalError("unknown type kind \(ty.getTypeKind)")
+        }
+    }
+}
+
 /// Used to get the users and usees of a Value.
 public protocol UseRef {
     var useRef: LLVMUseRef { get }

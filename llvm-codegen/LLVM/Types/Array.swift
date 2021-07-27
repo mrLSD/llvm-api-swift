@@ -23,6 +23,7 @@ public struct ArrayType: TypeRef {
 
     /// Creates an array type from an underlying element type and count.
     /// Maximum size of array limited by `UInt32`
+    /// The created type will exist in the context that its element type exists in.
     public init(elementType: TypeRef, count: UInt32) {
         self.elementType = elementType
         self.count = .x32(count)
@@ -31,10 +32,38 @@ public struct ArrayType: TypeRef {
 
     /// Creates an array type from an underlying element type and count.
     /// Maximum size of array limited by `UInt64`
+    /// The created type will exist in the context that its element type exists in.
     public init(elementType: TypeRef, count: UInt64) {
         self.elementType = elementType
         self.count = .x64(count)
         self.llvm = LLVMArrayType2(elementType.typeRef, count)
+    }
+
+    /// Obtain the length of an array type for 32 bits array size.
+    /// This only works on types that represent arrays.
+    public static func getArrayLength(arrayType: TypeRef) -> UInt32 {
+        LLVMGetArrayLength(arrayType.typeRef)
+    }
+
+    /// Obtain the length of an array type for 64 bits array size.
+    /// This only works on types that represent arrays.
+    public static func gtArrayLength2(arrayType: TypeRef) -> UInt64 {
+        LLVMGetArrayLength2(arrayType.typeRef)
+    }
+
+    /// Get the element type of an array  type.
+    public static func getElementType(arrayType: TypeRef) -> LLVMTypeRef {
+        LLVMGetElementType(arrayType.typeRef)
+    }
+
+    /// Returns type's subtypes
+    public static func getSubtypes(arrayType: TypeRef) -> [LLVMTypeRef?] {
+        let subtypeCount = LLVMGetNumContainedTypes(arrayType.typeRef)
+        var subtypes = [LLVMTypeRef?](repeating: nil, count: Int(subtypeCount))
+        subtypes.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMGetSubtypes(arrayType.typeRef, bufferPointer.baseAddress)
+        }
+        return subtypes
     }
 }
 
