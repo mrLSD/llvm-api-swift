@@ -27,6 +27,12 @@ public struct TargetExtType: TypeRef {
         }
         self.context = context
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        llvm = typeRef.typeRef
+        self.context = context
+    }
 }
 
 extension TargetExtType: Equatable {

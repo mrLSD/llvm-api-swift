@@ -21,6 +21,12 @@ public struct VoidType: TypeRef {
         llvm = LLVMVoidTypeInContext(context.contextRef)
         self.context = context
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        llvm = typeRef.typeRef
+        self.context = context
+    }
 }
 
 extension VoidType: Equatable {

@@ -95,10 +95,38 @@ public extension TypeRef {
     /// For the result can be applied operations: `is`, `as?`, `as!`
     var getConcreteTypeInContext: TypeRef {
         let ty = Types(llvm: self)
-        return switch ty.getTypeKind {
+        switch ty.getTypeKind {
         case .integerTypeKind:
-            Int1Type(typeRef: self, context: ty.getTypeContext)
-        default: fatalError("unknown type kind \(ty.getTypeKind)")
+            let intWidth = IntType.getIntTypeWidth(ty: self)
+            return switch intWidth {
+            case 1: Int1Type(typeRef: self, context: ty.getTypeContext)
+            case 8: Int8Type(typeRef: self, context: ty.getTypeContext)
+            case 16: Int16Type(typeRef: self, context: ty.getTypeContext)
+            case 32: Int32Type(typeRef: self, context: ty.getTypeContext)
+            case 64: Int64Type(typeRef: self, context: ty.getTypeContext)
+            case 128: Int128Type(typeRef: self, context: ty.getTypeContext)
+            default: IntType(bits: intWidth, in: ty.getTypeContext)
+            }
+        case .voidTypeKind: return VoidType(typeRef: self, context: ty.getTypeContext)
+        case .halfTypeKind: return HalfType(typeRef: self, context: ty.getTypeContext)
+        case .floatTypeKind: return FloatType(typeRef: self, context: ty.getTypeContext)
+        case .doubleTypeKind: return DoubleType(typeRef: self, context: ty.getTypeContext)
+        case .x86_FP80TypeKind: return X86FP80Type(typeRef: self, context: ty.getTypeContext)
+        case .fp128TypeKind: return FP128Type(typeRef: self, context: ty.getTypeContext)
+        case .ppc_FP128TypeKind: return PPCFP128Type(typeRef: self, context: ty.getTypeContext)
+        case .labelTypeKind: return LabelType(typeRef: self, context: ty.getTypeContext)
+        case .functionTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .structTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .arrayTypeKind: return ArrayType(typeRef: self)
+        case .pointerTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .vectorTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .metadataTypeKind:  return MetadataType(typeRef: self, context: ty.getTypeContext)
+        case .x86_MMXTypeKind: return X86MMXType(typeRef: self, context: ty.getTypeContext)
+        case .tokenTypeKind:  return TokenType(typeRef: self, context: ty.getTypeContext)
+        case .scalableVectorTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .bFloatTypeKind: return BFloatType(typeRef: self, context: ty.getTypeContext)
+        case .x86_AMXTypeKind: return X86AMXType(typeRef: self, context: ty.getTypeContext)
+        case .targetExtTypeKind: return TargetExtType(typeRef: self, context: ty.getTypeContext)
         }
     }
 }
@@ -179,6 +207,11 @@ public struct Types: TypeRef {
     /// Init `Types` by `TypeRef`
     public init(llvm: TypeRef) {
         self.llvm = llvm.typeRef
+    }
+
+    /// Init `Types` by `LLVMTypeRef`
+    public init(typeRef: LLVMTypeRef) {
+        self.llvm = typeRef
     }
 
     /// Obtain the enumerated type of a Type instance.

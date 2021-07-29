@@ -59,6 +59,7 @@ public class Int1Type: IntType {
         super.init(typeRef: LLVMInt1TypeInContext(context.contextRef), context: context)
     }
 
+    /// Init with predefined `TypeRef` and `Context`
     public init(typeRef: TypeRef, context: Context) {
         super.init(typeRef: typeRef.typeRef, context: context)
     }
@@ -75,6 +76,11 @@ public class Int8Type: IntType {
     public init(in context: Context) {
         super.init(typeRef: LLVMInt8TypeInContext(context.contextRef), context: context)
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// `Int16Type` int type with 16-bits
@@ -87,6 +93,11 @@ public class Int16Type: IntType {
     /// Creates an instance of the `Int16Type` type  in the Context.
     public init(in context: Context) {
         super.init(typeRef: LLVMInt16TypeInContext(context.contextRef), context: context)
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
     }
 }
 
@@ -101,6 +112,11 @@ public class Int32Type: IntType {
     public init(in context: Context) {
         super.init(typeRef: LLVMInt32TypeInContext(context.contextRef), context: context)
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// `Int64Type` int type with 64-bits
@@ -114,6 +130,11 @@ public class Int64Type: IntType {
     public init(in context: Context) {
         super.init(typeRef: LLVMInt64TypeInContext(context.contextRef), context: context)
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// `Int128Type` int type with 128-bits
@@ -126,6 +147,11 @@ public class Int128Type: IntType {
     /// Creates an instance of the `Int128Type` type  in the Context.
     public init(in context: Context) {
         super.init(typeRef: LLVMInt128TypeInContext(context.contextRef), context: context)
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
     }
 }
 

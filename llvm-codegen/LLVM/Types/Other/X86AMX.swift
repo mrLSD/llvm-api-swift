@@ -21,6 +21,12 @@ public struct X86AMXType: TypeRef {
         llvm = LLVMX86AMXTypeInContext(context.contextRef)
         self.context = context
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        llvm = typeRef.typeRef
+        self.context = context
+    }
 }
 
 extension X86AMXType: Equatable {
@@ -28,4 +34,3 @@ extension X86AMXType: Equatable {
         return lhs.typeRef == rhs.typeRef
     }
 }
-

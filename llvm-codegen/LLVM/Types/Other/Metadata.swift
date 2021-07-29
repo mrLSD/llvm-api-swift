@@ -11,11 +11,15 @@ public struct MetadataType: TypeRef {
     /// Retrieves the underlying LLVM type object.
     public var typeRef: LLVMTypeRef { llvm }
 
-
-
     /// Creates an instance of the `MetadataType` type  in the  context.
     public init(in context: Context) {
         llvm = LLVMMetadataTypeInContext(context.contextRef)
+        self.context = context
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        llvm = typeRef.typeRef
         self.context = context
     }
 }
@@ -25,4 +29,3 @@ extension MetadataType: Equatable {
         return lhs.typeRef == rhs.typeRef
     }
 }
-

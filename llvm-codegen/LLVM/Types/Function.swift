@@ -26,8 +26,8 @@ public class FunctionType: TypeRef {
 
     /// Get the Type this function Type returns.
     /// Also useful with: Types(funcReturnTy).getTypeKind, Types(funcReturnTy).getContext
-    public static func getReturnType(funcType: TypeRef) -> LLVMTypeRef {
-        LLVMGetReturnType(funcType.typeRef)
+    public static func getReturnType(funcType: TypeRef) -> TypeRef {
+        Types(typeRef: LLVMGetReturnType(funcType.typeRef))
     }
 
     /// Returns whether a function type is variadic.
@@ -41,7 +41,7 @@ public class FunctionType: TypeRef {
     }
 
     /// Get the types of a function's parameters.
-    public static func getParamTypes(funcType: TypeRef) -> [LLVMTypeRef?] {
+    public static func getParamTypes(funcType: TypeRef) -> [TypeRef] {
         // The Dest parameter should point to a pre-allocated array of
         // LLVMTypeRef at least LLVMCountParamTypes() large. On return, the
         // first LLVMCountParamTypes() entries in the array will be populated
@@ -51,7 +51,7 @@ public class FunctionType: TypeRef {
         paramTypes.withUnsafeMutableBufferPointer { bufferPointer in
             LLVMGetParamTypes(funcType.typeRef, bufferPointer.baseAddress)
         }
-        return paramTypes
+        return paramTypes.map { Types(typeRef: $0!) }
     }
 }
 

@@ -35,6 +35,11 @@ public class HalfType: FloatingType {
     public init(in context: Context) {
         super.init(typeRef: LLVMHalfTypeInContext(context.contextRef))
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// 16-bit brain floating point type
@@ -48,8 +53,12 @@ public class BFloatType: FloatingType {
     public init(in context: Context) {
         super.init(typeRef: LLVMBFloatTypeInContext(context.contextRef))
     }
-}
 
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
+}
 
 /// 32-bit floating point type
 public class FloatType: FloatingType {
@@ -61,6 +70,11 @@ public class FloatType: FloatingType {
     /// Creates an instance of the `FloatType` type  in the Context.
     public init(in context: Context) {
         super.init(typeRef: LLVMFloatTypeInContext(context.contextRef))
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
     }
 }
 
@@ -75,6 +89,11 @@ public class DoubleType: FloatingType {
     public init(in context: Context) {
         super.init(typeRef: LLVMDoubleTypeInContext(context.contextRef))
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// 80-bit floating point (X87) type
@@ -87,6 +106,11 @@ public class X86FP80Type: FloatingType {
     /// Creates an instance of the `x86FP80Type` type  in the Context.
     public init(in context: Context) {
         super.init(typeRef: LLVMX86FP80TypeInContext(context.contextRef))
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
     }
 }
 
@@ -101,6 +125,11 @@ public class FP128Type: FloatingType {
     public init(in context: Context) {
         super.init(typeRef: LLVMFP128TypeInContext(context.contextRef))
     }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
+    }
 }
 
 /// 128-bit floating point (two 64-bits)  type
@@ -113,6 +142,11 @@ public class PPCFP128Type: FloatingType {
     /// Creates an instance of the `PPCFP128Type` type  in the Context.
     public init(in context: Context) {
         super.init(typeRef: LLVMPPCFP128TypeInContext(context.contextRef))
+    }
+
+    /// Init with predefined `TypeRef` and `Context`
+    public init(typeRef: TypeRef, context: Context) {
+        super.init(typeRef: typeRef.typeRef, context: context)
     }
 }
 
