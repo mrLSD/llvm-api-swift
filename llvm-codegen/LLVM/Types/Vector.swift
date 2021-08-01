@@ -4,7 +4,7 @@ import CLLVM
 /// elements. `VectorType`s are used when multiple primitive data are operated
 /// in parallel using a single instruction (SIMD). A vector type requires a size
 /// (number of elements) and an underlying primitive data type.
-public struct VectorType: TypeRef {
+public class VectorType: TypeRef {
     private var llvm: LLVMTypeRef
 
     /// Retrieves the underlying LLVM type object.
@@ -29,6 +29,13 @@ public struct VectorType: TypeRef {
         self.elementType = VectorType.getElementType(vecType: typeRef)
         self.count = VectorType.getVectorSize(vecType: typeRef)
         self.llvm = typeRef.typeRef
+    }
+
+    /// Init for pre-init vector for depended class
+    init(for vecTy: LLVMTypeRef, elementType: TypeRef, count: UInt32) {
+        self.elementType = elementType
+        self.count = count
+        self.llvm = vecTy
     }
 
     /// Get the (possibly scalable) number of elements in a vector type.
@@ -56,5 +63,20 @@ public struct VectorType: TypeRef {
 extension VectorType: Equatable {
     public static func == (lhs: VectorType, rhs: VectorType) -> Bool {
         return lhs.typeRef == rhs.typeRef
+    }
+}
+
+// LLVMScalableVectorType
+public class ScalableVectorType: VectorType {
+    /// Create a vector type that contains a defined type and has a scalable  number of elements.
+    /// The created type will exist in the context thats its element type  exists in.
+    override public init(elementType: TypeRef, count: UInt32) {
+        let llvm = LLVMScalableVectorType(elementType.typeRef, count)!
+        super.init(for: llvm, elementType: elementType, count: count)
+    }
+
+    /// Init with predefined `TypeRef`
+    override public init(typeRef: TypeRef) {
+        super.init(typeRef: typeRef)
     }
 }
