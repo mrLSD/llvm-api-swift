@@ -51,14 +51,14 @@ import CLLVM
 ///   any value.  In practice, LLVM guarantees only 24 bits of precision, though higher address space
 ///   identifiers may succeed in being properly represented.
 public struct AddressSpace: Equatable {
-    let rawValue: Int
+    let rawValue: UInt32
 
     /// LLVM's default address space.
     public static let zero = AddressSpace(0)
 
     /// Creates and initializes an address space with the given identifier.
     /// - Parameter identifier: The raw, integral address space identifier.
-    public init(_ identifier: Int) {
+    public init(_ identifier: UInt32) {
         self.rawValue = identifier
     }
 }

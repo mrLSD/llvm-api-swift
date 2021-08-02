@@ -118,7 +118,10 @@ public extension TypeRef {
         case .functionTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
         case .structTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
         case .arrayTypeKind: return ArrayType(typeRef: self)
-        case .pointerTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .pointerTypeKind:
+            let pointee = PointerType.getElementType(ty: self)
+            let addressSpace = PointerType.getPointerAddressSpace(ty: self)
+            return PointerType(pointee: pointee, addressSpace: addressSpace)
         case .vectorTypeKind: return VectorType(typeRef: self)
         case .metadataTypeKind: return MetadataType(typeRef: self, context: ty.getTypeContext)
         case .x86_MMXTypeKind: return X86MMXType(typeRef: self, context: ty.getTypeContext)
