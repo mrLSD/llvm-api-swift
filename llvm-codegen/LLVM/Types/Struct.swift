@@ -81,7 +81,7 @@ public struct StructType: TypeRef {
     }
 
     /// Determine whether a structure is packed.
-    public func isPackedStruct(ty: TypeRef)-> Bool {
+    public func isPackedStruct(ty: TypeRef) -> Bool {
         LLVMIsPackedStruct(ty.typeRef) != 0
     }
 
@@ -98,6 +98,47 @@ public struct StructType: TypeRef {
     public func isLiteralStruct(ty: TypeRef) -> Bool {
         LLVMIsLiteralStruct(ty.typeRef) != 0
     }
+
+    /// Get the type of the element at a given index in the current structure.
+    public func getTypeAtIndex(index: UInt32) -> TypeRef {
+        Types(typeRef: LLVMStructGetTypeAtIndex(llvm, index)!)
+    }
+
+    /// Get the type of the element at a given index in the structure.
+    public func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef {
+        Types(typeRef: LLVMStructGetTypeAtIndex(typeRef.typeRef, index)!)
+    }
+
+    /// Obtain the name of the current structure.
+    public var getStructName: String {
+        guard let cString = LLVMGetStructName(llvm) else { return "" }
+        return String(cString: cString)
+    }
+
+    /// Obtain the name of a structure.
+    public static func getStructName(typeRef: TypeRef) -> String {
+        let cString = LLVMGetStructName(typeRef.typeRef)!
+        return String(cString: cString)
+    }
+
+    /// Set the contents of the current structure.
+    public func setBody(elementTypes: [TypeRef], isPacked: Bool = false) {
+        var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
+        mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMStructSetBody(llvm, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)
+        }
+    }
+
+    /// Set the contents of the structure.
+    public static func structSetBody(typeRef: TypeRef, elementTypes: [TypeRef], isPacked: Bool = false) {
+        var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
+        mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMStructSetBody(typeRef.typeRef, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)
+        }
+    }
+
+    // LLVMGetStructElementTypes
+    // LLVMCountStructElementTypes
 }
 
 extension StructType: Equatable {

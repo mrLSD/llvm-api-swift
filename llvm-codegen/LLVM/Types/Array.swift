@@ -42,8 +42,8 @@ public struct ArrayType: TypeRef {
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = ArrayType.getElementType(arrayType: typeRef)
-        self.count = .x64(ArrayType.getArrayLength2(arrayType: typeRef))
+        self.elementType = ArrayType.getElementType(typeRef: typeRef)
+        self.count = .x64(ArrayType.getArrayLength2(typeRef: typeRef))
         self.llvm = typeRef.typeRef
     }
 
@@ -54,23 +54,49 @@ public struct ArrayType: TypeRef {
         LLVMGetArrayLength(arrayType.typeRef)
     }
 
+    /// Get the length of an array type for 64 bits array size - for current array
+    /// This only works on types that represent arrays.
+    public var getArrayLength2: UInt64 {
+        ArrayType.getArrayLength2(typeRef: Types(typeRef: llvm))
+    }
+
     /// Get the length of an array type for 64 bits array size.
     /// This only works on types that represent arrays.
-    public static func getArrayLength2(arrayType: TypeRef) -> UInt64 {
-        LLVMGetArrayLength2(arrayType.typeRef)
+    public static func getArrayLength2(typeRef: TypeRef) -> UInt64 {
+        LLVMGetArrayLength2(typeRef.typeRef)
+    }
+
+    /// Get the element type of the current array  type.
+    public var getElementType: TypeRef {
+        ArrayType.getElementType(typeRef: Types(typeRef: llvm))
     }
 
     /// Get the element type of an array  type.
-    public static func getElementType(arrayType: TypeRef) -> TypeRef {
-        Types(typeRef: LLVMGetElementType(arrayType.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef {
+        Types(typeRef: LLVMGetElementType(typeRef.typeRef)!)
+    }
+
+    /// Return the number of types in the derived type for the current array.
+    public var getNumContainedTypes: UInt32 {
+        ArrayType.getNumContainedTypes(typeRef: Types(typeRef: llvm))
+    }
+
+    /// Return the number of types in the derived type.
+    public static func getNumContainedTypes(typeRef: TypeRef) -> UInt32 {
+        LLVMGetNumContainedTypes(typeRef.typeRef)
+    }
+
+    /// Returns type's subtypes for the current array
+    public var getSubtypes: [TypeRef] {
+        ArrayType.getSubtypes(typeRef: Types(typeRef: llvm))
     }
 
     /// Returns type's subtypes
-    public static func getSubtypes(arrayType: TypeRef) -> [TypeRef] {
-        let subtypeCount = LLVMGetNumContainedTypes(arrayType.typeRef)
+    public static func getSubtypes(typeRef: TypeRef) -> [TypeRef] {
+        let subtypeCount = ArrayType.getNumContainedTypes(typeRef: typeRef)
         var subtypes = [LLVMTypeRef?](repeating: nil, count: Int(subtypeCount))
         subtypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMGetSubtypes(arrayType.typeRef, bufferPointer.baseAddress)
+            LLVMGetSubtypes(typeRef.typeRef, bufferPointer.baseAddress)
         }
         return subtypes.map { Types(typeRef: $0!) }
     }
