@@ -52,8 +52,8 @@ public struct StructType: TypeRef {
     }
 
     /// Init with predefined `TypeRef` in global context
-    init(typeRef: LLVMTypeRef) {
-        llvm = typeRef
+    init(typeRef: TypeRef) {
+        llvm = typeRef.typeRef
         context = nil
     }
 
@@ -61,12 +61,12 @@ public struct StructType: TypeRef {
     /// Return true if this is a struct type with an identity that has an
     /// unspecified body.
     public var isOpaqueStruct: Bool {
-        return LLVMIsOpaqueStruct(llvm) != 0
+        Self.isOpaqueStruct(typeRef: Types(typeRef: llvm))
     }
 
     /// Determine whether a structure is opaque.
-    public func isOpaqueStruct(ty: TypeRef) -> Bool {
-        return LLVMIsOpaqueStruct(ty.typeRef) != 0
+    public static func isOpaqueStruct(typeRef: TypeRef) -> Bool {
+        return LLVMIsOpaqueStruct(typeRef.typeRef) != 0
     }
 
     /// Determine whether a structure is packed.
@@ -77,12 +77,12 @@ public struct StructType: TypeRef {
     /// one after the other.  A non-packed struct type includes padding according
     /// to the data layout of the target.
     public var isPackedStruct: Bool {
-        return LLVMIsPackedStruct(llvm) != 0
+        Self.isPackedStruct(typeRef: Types(typeRef: llvm))
     }
 
     /// Determine whether a structure is packed.
-    public func isPackedStruct(ty: TypeRef) -> Bool {
-        LLVMIsPackedStruct(ty.typeRef) != 0
+    public static func isPackedStruct(typeRef: TypeRef) -> Bool {
+        LLVMIsPackedStruct(typeRef.typeRef) != 0
     }
 
     /// Returns true if this is a literal struct type.
@@ -91,42 +91,38 @@ public struct StructType: TypeRef {
     /// regardless of how it is named, two literal structures are equal if
     /// their fields are equal.
     public var isLiteralStruct: Bool {
-        LLVMIsLiteralStruct(llvm) != 0
+        Self.isLiteralStruct(typeRef: Types(typeRef: llvm))
     }
 
     /// Determine whether a structure is literal.
-    public func isLiteralStruct(ty: TypeRef) -> Bool {
-        LLVMIsLiteralStruct(ty.typeRef) != 0
+    public static func isLiteralStruct(typeRef: TypeRef) -> Bool {
+        LLVMIsLiteralStruct(typeRef.typeRef) != 0
     }
 
     /// Get the type of the element at a given index in the current structure.
     public func getTypeAtIndex(index: UInt32) -> TypeRef {
-        Types(typeRef: LLVMStructGetTypeAtIndex(llvm, index)!)
+        Self.structGetTypeAtIndex(typeRef: Types(typeRef: llvm), index: index)
     }
 
     /// Get the type of the element at a given index in the structure.
-    public func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef {
+    public static func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef {
         Types(typeRef: LLVMStructGetTypeAtIndex(typeRef.typeRef, index)!)
     }
 
     /// Obtain the name of the current structure.
     public var getStructName: String {
-        guard let cString = LLVMGetStructName(llvm) else { return "" }
-        return String(cString: cString)
+        Self.getStructName(typeRef: Types(typeRef: llvm))
     }
 
     /// Obtain the name of a structure.
     public static func getStructName(typeRef: TypeRef) -> String {
-        let cString = LLVMGetStructName(typeRef.typeRef)!
+        guard let cString = LLVMGetStructName(typeRef.typeRef) else { return "" }
         return String(cString: cString)
     }
 
     /// Set the contents of the current structure.
     public func setBody(elementTypes: [TypeRef], isPacked: Bool = false) {
-        var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
-        mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMStructSetBody(llvm, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)
-        }
+        StructType.structSetBody(typeRef: Types(typeRef: llvm), elementTypes: elementTypes, isPacked: isPacked)
     }
 
     /// Set the contents of the structure.

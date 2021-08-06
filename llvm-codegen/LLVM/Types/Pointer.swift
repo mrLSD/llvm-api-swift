@@ -52,35 +52,35 @@ public struct PointerType: TypeRef {
     /// Determine whether a pointer is opaque.
     /// True if this is an instance of an opaque PointerType.
     public var pointerTypeIsOpaque: Bool {
-        LLVMPointerTypeIsOpaque(llvm) != 0
+        Self.pointerTypeIsOpaque(typeRef: Types(typeRef: llvm))
     }
 
     /// Determine whether a pointer is opaque.
     /// True if this is an instance of an opaque PointerType.
-    public static func pointerTypeIsOpaque(ty: TypeRef) -> Bool {
-        LLVMPointerTypeIsOpaque(ty.typeRef) != 0
+    public static func pointerTypeIsOpaque(typeRef: TypeRef) -> Bool {
+        LLVMPointerTypeIsOpaque(typeRef.typeRef) != 0
     }
 
     /// Get the address space of a pointer type.
     /// This only works on types that represent pointers.
     public var getPointerAddressSpace: AddressSpace {
-        AddressSpace(LLVMGetPointerAddressSpace(llvm))
+        Self.getPointerAddressSpace(typeRef: Types(typeRef: llvm))
     }
 
     /// Get the address space of a pointer type.
     /// This only works on types that represent pointers.
-    public static func getPointerAddressSpace(ty: TypeRef) -> AddressSpace {
-        AddressSpace(LLVMGetPointerAddressSpace(ty.typeRef))
+    public static func getPointerAddressSpace(typeRef: TypeRef) -> AddressSpace {
+        AddressSpace(LLVMGetPointerAddressSpace(typeRef.typeRef))
     }
 
     // Get the element type of an Pointer  type.
     public var getElementType: TypeRef {
-        Types(typeRef: LLVMGetElementType(llvm)!)
+        Self.getElementType(typeRef: Types(typeRef: llvm))
     }
 
     /// Get the element type of an Pointer  type.
-    public static func getElementType(ty: TypeRef) -> TypeRef {
-        Types(typeRef: LLVMGetElementType(ty.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef {
+        Types(typeRef: LLVMGetElementType(typeRef.typeRef)!)
     }
 }
 

@@ -26,8 +26,8 @@ public class VectorType: TypeRef {
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = VectorType.getElementType(vecType: typeRef)
-        self.count = VectorType.getVectorSize(vecType: typeRef)
+        self.elementType = VectorType.getElementType(typeRef: typeRef)
+        self.count = VectorType.getVectorSize(typeRef: typeRef)
         self.llvm = typeRef.typeRef
     }
 
@@ -38,23 +38,39 @@ public class VectorType: TypeRef {
         self.llvm = vecTy
     }
 
+    /// Get the (possibly scalable) number of elements in the current vector type.
+    /// This only works on types that represent vectors (fixed or scalable).
+    public var getVectorSize: UInt32 {
+        Self.getVectorSize(typeRef: Types(typeRef: llvm))
+    }
+
     /// Get the (possibly scalable) number of elements in a vector type.
     /// This only works on types that represent vectors (fixed or scalable).
-    public static func getVectorSize(vecType: TypeRef) -> UInt32 {
-        LLVMGetVectorSize(vecType.typeRef)
+    public static func getVectorSize(typeRef: TypeRef) -> UInt32 {
+        LLVMGetVectorSize(typeRef.typeRef)
+    }
+
+    /// Get the element type of the currect vector  type.
+    public var getElementType: TypeRef {
+        Self.getElementType(typeRef: Types(typeRef: llvm))
     }
 
     /// Get the element type of an vector  type.
-    public static func getElementType(vecType: TypeRef) -> TypeRef {
-        Types(typeRef: LLVMGetElementType(vecType.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef {
+        Types(typeRef: LLVMGetElementType(typeRef.typeRef)!)
+    }
+
+    /// Returns type's subtypes for current vector
+    public var getSubtypes: [TypeRef] {
+        Self.getSubtypes(typeRef: Types(typeRef: llvm))
     }
 
     /// Returns type's subtypes
-    public static func getSubtypes(vecType: TypeRef) -> [TypeRef] {
-        let subtypeCount = LLVMGetNumContainedTypes(vecType.typeRef)
+    public static func getSubtypes(typeRef: TypeRef) -> [TypeRef] {
+        let subtypeCount = LLVMGetNumContainedTypes(typeRef.typeRef)
         var subtypes = [LLVMTypeRef?](repeating: nil, count: Int(subtypeCount))
         subtypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMGetSubtypes(vecType.typeRef, bufferPointer.baseAddress)
+            LLVMGetSubtypes(typeRef.typeRef, bufferPointer.baseAddress)
         }
         return subtypes.map { Types(typeRef: $0!) }
     }
