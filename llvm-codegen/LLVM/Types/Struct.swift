@@ -61,7 +61,7 @@ public struct StructType: TypeRef {
     /// Return true if this is a struct type with an identity that has an
     /// unspecified body.
     public var isOpaqueStruct: Bool {
-        Self.isOpaqueStruct(typeRef: Types(typeRef: llvm))
+        Self.isOpaqueStruct(typeRef: Types(llvm: llvm))
     }
 
     /// Determine whether a structure is opaque.
@@ -77,7 +77,7 @@ public struct StructType: TypeRef {
     /// one after the other.  A non-packed struct type includes padding according
     /// to the data layout of the target.
     public var isPackedStruct: Bool {
-        Self.isPackedStruct(typeRef: Types(typeRef: llvm))
+        Self.isPackedStruct(typeRef: Types(llvm: llvm))
     }
 
     /// Determine whether a structure is packed.
@@ -91,7 +91,7 @@ public struct StructType: TypeRef {
     /// regardless of how it is named, two literal structures are equal if
     /// their fields are equal.
     public var isLiteralStruct: Bool {
-        Self.isLiteralStruct(typeRef: Types(typeRef: llvm))
+        Self.isLiteralStruct(typeRef: Types(llvm: llvm))
     }
 
     /// Determine whether a structure is literal.
@@ -101,17 +101,17 @@ public struct StructType: TypeRef {
 
     /// Get the type of the element at a given index in the current structure.
     public func getTypeAtIndex(index: UInt32) -> TypeRef {
-        Self.structGetTypeAtIndex(typeRef: Types(typeRef: llvm), index: index)
+        Self.structGetTypeAtIndex(typeRef: Types(llvm: llvm), index: index)
     }
 
     /// Get the type of the element at a given index in the structure.
     public static func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef {
-        Types(typeRef: LLVMStructGetTypeAtIndex(typeRef.typeRef, index)!)
+        Types(llvm: LLVMStructGetTypeAtIndex(typeRef.typeRef, index)!)
     }
 
     /// Obtain the name of the current structure.
     public var getStructName: String {
-        Self.getStructName(typeRef: Types(typeRef: llvm))
+        Self.getStructName(typeRef: Types(llvm: llvm))
     }
 
     /// Obtain the name of a structure.
@@ -122,7 +122,7 @@ public struct StructType: TypeRef {
 
     /// Set the contents of the current structure.
     public func setBody(elementTypes: [TypeRef], isPacked: Bool = false) {
-        StructType.structSetBody(typeRef: Types(typeRef: llvm), elementTypes: elementTypes, isPacked: isPacked)
+        StructType.structSetBody(typeRef: Types(llvm: llvm), elementTypes: elementTypes, isPacked: isPacked)
     }
 
     /// Set the contents of the structure.

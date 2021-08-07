@@ -94,7 +94,7 @@ public extension TypeRef {
     /// Get concrete type in their Context.
     /// For the result can be applied operations: `is`, `as?`, `as!`
     var getConcreteTypeInContext: TypeRef {
-        let ty = Types(llvm: self)
+        let ty = Types(typeRef: self)
         switch ty.getTypeKind {
         case .integerTypeKind:
             let intWidth = IntType.getIntTypeWidth(ty: self)
@@ -115,7 +115,11 @@ public extension TypeRef {
         case .fp128TypeKind: return FP128Type(typeRef: self, context: ty.getTypeContext)
         case .ppc_FP128TypeKind: return PPCFP128Type(typeRef: self, context: ty.getTypeContext)
         case .labelTypeKind: return LabelType(typeRef: self, context: ty.getTypeContext)
-        case .functionTypeKind: fatalError("unknown type kind \(ty.getTypeKind)")
+        case .functionTypeKind:
+            let paramTypes = FunctionType.getParamTypes(funcType: self)
+            let returnTy = FunctionType.getReturnType(funcType: self)
+            let isVarArg = FunctionType.isFunctionVarArg(funcType: self)
+            return FunctionType(returnType: returnTy, parameterTypes: paramTypes, isVariadic: isVarArg)
         case .structTypeKind: return StructType(typeRef: self)
         case .arrayTypeKind: return ArrayType(typeRef: self)
         case .pointerTypeKind:
@@ -208,13 +212,13 @@ public struct Types: TypeRef {
     public var typeRef: LLVMTypeRef { llvm }
 
     /// Init `Types` by `TypeRef`
-    public init(llvm: TypeRef) {
-        self.llvm = llvm.typeRef
+    public init(typeRef: TypeRef) {
+        self.llvm = typeRef.typeRef
     }
 
     /// Init `Types` by `LLVMTypeRef`
-    public init(typeRef: LLVMTypeRef) {
-        self.llvm = typeRef
+    public init(llvm: LLVMTypeRef) {
+        self.llvm = llvm
     }
 
     /// Obtain the enumerated type of a Type instance.
@@ -239,7 +243,7 @@ public struct Types: TypeRef {
 
     /// Return a string representation of the type.
     public func printTypeToString() -> String {
-        let cstring = LLVMPrintTypeToString(typeRef)
-        return String(cString: cstring!)
+        guard let cString = LLVMPrintTypeToString(typeRef) else { return "" }
+        return String(cString: cString)
     }
 }

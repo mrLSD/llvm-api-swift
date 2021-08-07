@@ -41,7 +41,7 @@ public class VectorType: TypeRef {
     /// Get the (possibly scalable) number of elements in the current vector type.
     /// This only works on types that represent vectors (fixed or scalable).
     public var getVectorSize: UInt32 {
-        Self.getVectorSize(typeRef: Types(typeRef: llvm))
+        Self.getVectorSize(typeRef: Types(llvm: llvm))
     }
 
     /// Get the (possibly scalable) number of elements in a vector type.
@@ -52,17 +52,17 @@ public class VectorType: TypeRef {
 
     /// Get the element type of the currect vector  type.
     public var getElementType: TypeRef {
-        Self.getElementType(typeRef: Types(typeRef: llvm))
+        Self.getElementType(typeRef: Types(llvm: llvm))
     }
 
     /// Get the element type of an vector  type.
     public static func getElementType(typeRef: TypeRef) -> TypeRef {
-        Types(typeRef: LLVMGetElementType(typeRef.typeRef)!)
+        Types(llvm: LLVMGetElementType(typeRef.typeRef)!)
     }
 
     /// Returns type's subtypes for current vector
     public var getSubtypes: [TypeRef] {
-        Self.getSubtypes(typeRef: Types(typeRef: llvm))
+        Self.getSubtypes(typeRef: Types(llvm: llvm))
     }
 
     /// Returns type's subtypes
@@ -72,7 +72,7 @@ public class VectorType: TypeRef {
         subtypes.withUnsafeMutableBufferPointer { bufferPointer in
             LLVMGetSubtypes(typeRef.typeRef, bufferPointer.baseAddress)
         }
-        return subtypes.map { Types(typeRef: $0!) }
+        return subtypes.map { Types(llvm: $0!) }
     }
 }
 

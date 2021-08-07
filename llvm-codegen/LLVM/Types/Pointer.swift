@@ -52,7 +52,7 @@ public struct PointerType: TypeRef {
     /// Determine whether a pointer is opaque.
     /// True if this is an instance of an opaque PointerType.
     public var pointerTypeIsOpaque: Bool {
-        Self.pointerTypeIsOpaque(typeRef: Types(typeRef: llvm))
+        Self.pointerTypeIsOpaque(typeRef: Types(llvm: llvm))
     }
 
     /// Determine whether a pointer is opaque.
@@ -64,7 +64,7 @@ public struct PointerType: TypeRef {
     /// Get the address space of a pointer type.
     /// This only works on types that represent pointers.
     public var getPointerAddressSpace: AddressSpace {
-        Self.getPointerAddressSpace(typeRef: Types(typeRef: llvm))
+        Self.getPointerAddressSpace(typeRef: Types(llvm: llvm))
     }
 
     /// Get the address space of a pointer type.
@@ -75,12 +75,12 @@ public struct PointerType: TypeRef {
 
     // Get the element type of an Pointer  type.
     public var getElementType: TypeRef {
-        Self.getElementType(typeRef: Types(typeRef: llvm))
+        Self.getElementType(typeRef: Types(llvm: llvm))
     }
 
     /// Get the element type of an Pointer  type.
     public static func getElementType(typeRef: TypeRef) -> TypeRef {
-        Types(typeRef: LLVMGetElementType(typeRef.typeRef)!)
+        Types(llvm: LLVMGetElementType(typeRef.typeRef)!)
     }
 }
 
