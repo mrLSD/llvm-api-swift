@@ -138,12 +138,13 @@ public extension TypeRef {
     }
 }
 
-/// Used to get the users and usees of a Value.
+/// Used to get the users and uses of a Value.
 public protocol UseRef {
     var useRef: LLVMUseRef { get }
 }
 
 /// Represents an entry in a Global Object's metadata attachments.
+@available(*, unavailable, message: "Unavailable for current LLVM-C API")
 public protocol ValueMetadataEntry {
     // `LLVMValueMetadataEntry` not found
     // var valueMetadataEntry: LLVMValueMetadataEntry { get }

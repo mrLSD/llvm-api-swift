@@ -133,8 +133,37 @@ public struct StructType: TypeRef {
         }
     }
 
-    // LLVMGetStructElementTypes
-    // LLVMCountStructElementTypes
+    // Get the number of elements defined inside the current structure.
+    public var countStructElementTypes: UInt32 {
+        Self.countStructElementTypes(typeRef: Types(llvm: llvm))
+    }
+
+    /// Get the number of elements defined inside the structure.
+    public static func countStructElementTypes(typeRef: TypeRef) -> UInt32 {
+        LLVMCountStructElementTypes(typeRef.typeRef)
+    }
+
+    ///  Get the elements within current structure.
+    public var structElementTypes: [TypeRef] {
+        Self.structElementTypes(typeRef: Types(llvm: llvm))
+    }
+
+    ///  Get the elements within a structure.
+    ///
+    /// The function is passed the address of a pre-allocated array of
+    /// LLVMTypeRef at least LLVMCountStructElementTypes() long. After
+    /// invocation, this array will be populated with the structure's
+    /// elements. The objects in the destination array will have a lifetime
+    /// of the structure type itself, which is the lifetime of the context it
+    /// is contained in.
+    public static func structElementTypes(typeRef: TypeRef) -> [TypeRef] {
+        let elementCount = Self.countStructElementTypes(typeRef: typeRef)
+        var elementTypes = [LLVMTypeRef?](repeating: nil, count: Int(elementCount))
+        elementTypes.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMGetStructElementTypes(typeRef.typeRef, bufferPointer.baseAddress)
+        }
+        return elementTypes.map { Types(llvm: $0!) }
+    }
 }
 
 extension StructType: Equatable {
