@@ -17,7 +17,7 @@ public struct FunctionType: TypeRef {
     public init(returnType: TypeRef, parameterTypes: [TypeRef], isVariadic: Bool = false) {
         var mutableParamTypes = parameterTypes.map { $0.typeRef as Optional }
         self.llvm = mutableParamTypes.withUnsafeMutableBufferPointer { paramsBuffer in
-            LLVMFunctionType(returnType.typeRef, paramsBuffer.baseAddress, UInt32(parameterTypes.count), Int32(isVariadic ? 1 : 0))!
+            LLVMFunctionType(returnType.typeRef, paramsBuffer.baseAddress, UInt32(parameterTypes.count), isVariadic.llvm)!
         }
         self.returnType = returnType
         self.parameterTypes = parameterTypes

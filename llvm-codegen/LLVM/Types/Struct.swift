@@ -35,7 +35,7 @@ public struct StructType: TypeRef {
     public init(in context: Context, elementTypes: [TypeRef], isPacked: Bool = false) {
         var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
         llvm = mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMStructTypeInContext(context.contextRef, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)!
+            LLVMStructTypeInContext(context.contextRef, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked.llvm)!
         }
         self.context = context
     }
@@ -46,7 +46,7 @@ public struct StructType: TypeRef {
     public init(elementTypes: [TypeRef], isPacked: Bool = false) {
         var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
         llvm = mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMStructType(bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)!
+            LLVMStructType(bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked.llvm)!
         }
         context = nil
     }
@@ -129,7 +129,7 @@ public struct StructType: TypeRef {
     public static func structSetBody(typeRef: TypeRef, elementTypes: [TypeRef], isPacked: Bool = false) {
         var mutElementTypes = elementTypes.map { $0.typeRef as Optional }
         mutElementTypes.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMStructSetBody(typeRef.typeRef, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked ? 1 : 0)
+            LLVMStructSetBody(typeRef.typeRef, bufferPointer.baseAddress, UInt32(elementTypes.count), isPacked.llvm)
         }
     }
 

@@ -248,3 +248,8 @@ public struct Types: TypeRef {
         return String(cString: cString)
     }
 }
+
+public extension Bool {
+    /// Get  `LLVM` representation for Boolean type
+    var llvm: Int32 { self ? 1 : 0 }
+}

@@ -48,7 +48,7 @@ public class Context: ContextRef {
     /// in release environments.
     public var discardValueNames: Bool {
         get { return LLVMContextShouldDiscardValueNames(llvm) != 0 }
-        set { LLVMContextSetDiscardValueNames(llvm, Int32(newValue ? 1 : 0)) }
+        set { LLVMContextSetDiscardValueNames(llvm, newValue.llvm) }
     }
 
     /// Deinitialize this value and dispose of its resources.
