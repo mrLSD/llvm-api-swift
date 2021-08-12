@@ -59,7 +59,7 @@ public struct ArrayType: TypeRef {
     /// Get the length of an array type for 64 bits array size - for current array
     /// This only works on types that represent arrays.
     public var getArrayLength2: UInt64 {
-        Self.getArrayLength2(typeRef: Types(llvm: llvm))
+        Self.getArrayLength2(typeRef: self)
     }
 
     /// Get the length of an array type for 64 bits array size.
@@ -70,7 +70,7 @@ public struct ArrayType: TypeRef {
 
     /// Get the element type of the current array  type.
     public var getElementType: TypeRef {
-        Self.getElementType(typeRef: Types(llvm: llvm))
+        Self.getElementType(typeRef: self)
     }
 
     /// Get the element type of an array  type.
@@ -80,7 +80,7 @@ public struct ArrayType: TypeRef {
 
     /// Return the number of types in the derived type for the current array.
     public var getNumContainedTypes: UInt32 {
-        Self.getNumContainedTypes(typeRef: Types(llvm: llvm))
+        Self.getNumContainedTypes(typeRef: self)
     }
 
     /// Return the number of types in the derived type.
@@ -90,7 +90,7 @@ public struct ArrayType: TypeRef {
 
     /// Returns type's subtypes for the current array
     public var getSubtypes: [TypeRef] {
-        Self.getSubtypes(typeRef: Types(llvm: llvm))
+        Self.getSubtypes(typeRef: self)
     }
 
     /// Returns type's subtypes

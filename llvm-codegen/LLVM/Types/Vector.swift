@@ -41,7 +41,7 @@ public class VectorType: TypeRef {
     /// Get the (possibly scalable) number of elements in the current vector type.
     /// This only works on types that represent vectors (fixed or scalable).
     public var getVectorSize: UInt32 {
-        Self.getVectorSize(typeRef: Types(llvm: llvm))
+        Self.getVectorSize(typeRef: self)
     }
 
     /// Get the (possibly scalable) number of elements in a vector type.
@@ -52,7 +52,7 @@ public class VectorType: TypeRef {
 
     /// Get the element type of the currect vector  type.
     public var getElementType: TypeRef {
-        Self.getElementType(typeRef: Types(llvm: llvm))
+        Self.getElementType(typeRef: self)
     }
 
     /// Get the element type of an vector  type.
@@ -62,7 +62,7 @@ public class VectorType: TypeRef {
 
     /// Returns type's subtypes for current vector
     public var getSubtypes: [TypeRef] {
-        Self.getSubtypes(typeRef: Types(llvm: llvm))
+        Self.getSubtypes(typeRef: self)
     }
 
     /// Returns type's subtypes

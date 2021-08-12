@@ -26,7 +26,7 @@ public struct FunctionType: TypeRef {
 
     /// Get the Type current function type returns.
     public var getReturnType: TypeRef {
-        Self.getReturnType(funcType: Types(llvm: llvm))
+        Self.getReturnType(funcType: self)
     }
 
     /// Get the Type this function Type returns.
@@ -37,7 +37,7 @@ public struct FunctionType: TypeRef {
 
     /// Returns whether the current function type is variadic.
     public var isFunctionVarArg: Bool {
-        Self.isFunctionVarArg(funcType: Types(llvm: llvm))
+        Self.isFunctionVarArg(funcType: self)
     }
 
     /// Returns whether a function type is variadic.
@@ -47,7 +47,7 @@ public struct FunctionType: TypeRef {
 
     /// Get the number of parameters current function accepts.
     public var countParamTypes: UInt32 {
-        Self.countParamTypes(funcType: Types(llvm: llvm))
+        Self.countParamTypes(funcType: self)
     }
 
     /// Get the number of parameters this function accepts.
@@ -57,7 +57,7 @@ public struct FunctionType: TypeRef {
 
     /// Get the types of a function's parameters.
     public var getParamTypes: [TypeRef] {
-        Self.getParamTypes(funcType: Types(llvm: llvm))
+        Self.getParamTypes(funcType: self)
     }
 
     /// Get the types of a function's parameters.
