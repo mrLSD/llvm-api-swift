@@ -76,16 +76,22 @@ public struct BasicBlock: BasicBlockRef {
     /// Retrieves the underlying LLVM value object.
     public var basicBlockRef: LLVMBasicBlockRef { llvm }
 
-    /// Creates a `BasicBlock` from an `LLVMBasicBlockRef` object.
-    public init(llvm: LLVMBasicBlockRef) {
+    /// Creates a `BasicBlock` from an `BasicBlockRef` object.
+    public init(basicBlockRef: BasicBlockRef) {
+        llvm = basicBlockRef.basicBlockRef
+        context = nil
+    }
+
+    /// Init by LLVM ref
+    private init(llvm: LLVMBasicBlockRef) {
         self.llvm = llvm
         context = nil
     }
 
-    /// Create a new basic block without inserting it into a function.
+    /// Create a new basic block in Context without inserting it into a function.
     ///
     /// The basic block should be inserted into a function or destroyed before
-    /// the IR builder is finalized.
+    /// the builder is finalized.
     public init(context: Context, name: String) {
         llvm = LLVMCreateBasicBlockInContext(context.contextRef, name)
         self.context = context
@@ -96,7 +102,7 @@ public struct BasicBlock: BasicBlockRef {
     ///
     /// - Parameter position: The basic block that acts as a position before
     ///   which this block will be moved.
-    public func moveBasicBlockBefore(before position: BasicBlock) {
+    public func moveBasicBlockBefore(position: BasicBlock) {
         LLVMMoveBasicBlockBefore(basicBlockRef, position.basicBlockRef)
     }
 
@@ -105,27 +111,27 @@ public struct BasicBlock: BasicBlockRef {
     ///
     /// - Parameter position: The basic block that acts as a position after
     ///   which this block will be moved.
-    public func moveBasicBlockAfter(after position: BasicBlock) {
+    public func moveBasicBlockAfter(position: BasicBlock) {
         LLVMMoveBasicBlockAfter(basicBlockRef, position.basicBlockRef)
     }
 
     /// Retrieves the name of this basic block.
     public var getBasicBlockName: String {
-        let cstring = LLVMGetBasicBlockName(llvm)
-        return String(cString: cstring!)
+        guard let cString = LLVMGetBasicBlockName(llvm) else { return "" }
+        return String(cString: cString)
     }
 
-//    /// Returns the first instruction in the basic block, if it exists.
-//    public var getFirstInstruction: IRInstruction? {
-//        guard let val = LLVMGetFirstInstruction(llvm) else { return nil }
-//        return Instruction(llvm: val)
-//    }
+    /// Returns the first instruction in the basic block, if it exists.
+    public var getFirstInstruction: ValueRef? {
+        guard let val = LLVMGetFirstInstruction(llvm) else { return nil }
+        return Instruction(llvm: val)
+    }
 
-//    /// Returns the first instruction in the basic block, if it exists.
-//    public var lastInstruction: IRInstruction? {
-//        guard let val = LLVMGetLastInstruction(llvm) else { return nil }
-//        return Instruction(llvm: val)
-//    }
+    /// Returns the first instruction in the basic block, if it exists.
+    public var getLastInstruction: ValueRef? {
+        guard let val = LLVMGetLastInstruction(llvm) else { return nil }
+        return Instruction(llvm: val)
+    }
 
 //    /// Returns the terminator instruction if this basic block is well formed or
 //    /// `nil` if it is not well formed.
@@ -134,11 +140,11 @@ public struct BasicBlock: BasicBlockRef {
 //        return TerminatorInstruction(llvm: term)
 //    }
 
-//    /// Returns the parent function of this basic block, if it exists.
-//    public var parent: Function? {
-//        guard let functionRef = LLVMGetBasicBlockParent(llvm) else { return nil }
-//        return Function(llvm: functionRef)
-//    }
+    /// Returns the parent function of this basic block, if it exists.
+    public var getBasicBlockParent: Function? {
+        guard let functionRef = LLVMGetBasicBlockParent(llvm) else { return nil }
+        return Function(llvm: functionRef)
+    }
 
     /// Returns the basic block following this basic block, if it exists.
     public var getNextBasicBlock: BasicBlock? {
@@ -152,17 +158,6 @@ public struct BasicBlock: BasicBlockRef {
         return BasicBlock(llvm: blockRef)
     }
 
-//    /// Returns a sequence of the Instructions that make up this basic block.
-//    public var instructions: AnySequence<IRInstruction> {
-//        var current = firstInstruction
-//        return AnySequence<IRInstruction> {
-//            return AnyIterator<IRInstruction> {
-//                defer { current = current?.next() }
-//                return current
-//            }
-//        }
-//    }
-
     /// Removes this basic block from a function but keeps it alive.
     ///
     /// - note: To ensure correct removal of the block, you must invalidate any
@@ -173,14 +168,86 @@ public struct BasicBlock: BasicBlockRef {
     }
 
     /// Moves this basic block before the given basic block.
-    public func moveBasicBlockBefore(_ block: BasicBlock) {
+    public func moveBasicBlockBefore(block: BasicBlock) {
         LLVMMoveBasicBlockBefore(llvm, block.llvm)
     }
 
     /// Moves this basic block after the given basic block.
-    public func moveBasicBlockAfter(_ block: BasicBlock) {
+    public func moveBasicBlockAfter(block: BasicBlock) {
         LLVMMoveBasicBlockAfter(llvm, block.llvm)
     }
+
+    /// Remove a basic block from a function and delete it.
+    /// This deletes the basic block from its containing function and deletes
+    /// the basic block itself.
+    public var LLVMDeleteBasicBlock {
+        LLVMDeleteBasicBlock(llvm)
+    }
+
+    /// Convert a basic block instance to a value type.
+    public var bsicBlockAsValue: ValueRef {
+        LLVMBasicBlockAsValue(llvm)
+    }
+
+  
+    // LLVMBool     LLVMValueIsBasicBlock (LLVMValueRef Val)
+//    Determine whether an LLVMValueRef is itself a basic block.
+//
+    // LLVMBasicBlockRef     LLVMValueAsBasicBlock (LLVMValueRef Val)
+//    Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
+//
+
+
+    // unsigned     LLVMCountBasicBlocks (LLVMValueRef Fn)
+//    Obtain the number of basic blocks in a function.
+//
+    // void     LLVMGetBasicBlocks (LLVMValueRef Fn, LLVMBasicBlockRef *BasicBlocks)
+//    Obtain all of the basic blocks in a function.
+//
+    // LLVMBasicBlockRef     LLVMGetFirstBasicBlock (LLVMValueRef Fn)
+//    Obtain the first basic block in a function.
+//
+    // LLVMBasicBlockRef     LLVMGetLastBasicBlock (LLVMValueRef Fn)
+//    Obtain the last basic block in a function.
+//
+    // LLVMBasicBlockRef     LLVMGetNextBasicBlock (LLVMBasicBlockRef BB)
+//    Advance a basic block iterator.
+//
+    // LLVMBasicBlockRef     LLVMGetPreviousBasicBlock (LLVMBasicBlockRef BB)
+//    Go backwards in a basic block iterator.
+//
+    // LLVMBasicBlockRef     LLVMGetEntryBasicBlock (LLVMValueRef Fn)
+//    Obtain the basic block that corresponds to the entry point of a function.
+//
+    // void     LLVMInsertExistingBasicBlockAfterInsertBlock (LLVMBuilderRef Builder, LLVMBasicBlockRef BB)
+//    Insert the given basic block after the insertion point of the given builder.
+//
+    // void     LLVMAppendExistingBasicBlock (LLVMValueRef Fn, LLVMBasicBlockRef BB)
+//    Append the given basic block to the basic block list of the given function.
+//
+    // LLVMBasicBlockRef     LLVMAppendBasicBlockInContext (LLVMContextRef C, LLVMValueRef Fn, const char *Name)
+//    Append a basic block to the end of a function.
+//
+    // LLVMBasicBlockRef     LLVMAppendBasicBlock (LLVMValueRef Fn, const char *Name)
+//    Append a basic block to the end of a function using the global context.
+//
+    // LLVMBasicBlockRef     LLVMInsertBasicBlockInContext (LLVMContextRef C, LLVMBasicBlockRef BB, const char *Name)
+//    Insert a basic block in a function before another basic block.
+//
+    // LLVMBasicBlockRef     LLVMInsertBasicBlock (LLVMBasicBlockRef InsertBeforeBB, const char *Name)
+//    Insert a basic block in a function using the global context.
+//
+
+//    /// Returns a sequence of the Instructions that make up this basic block.
+//    public var instructions: AnySequence<IRInstruction> {
+//        var current = firstInstruction
+//        return AnySequence<IRInstruction> {
+//            return AnyIterator<IRInstruction> {
+//                defer { current = current?.next() }
+//                return current
+//            }
+//        }
+//    }
 }
 
 // public extension BasicBlock {
