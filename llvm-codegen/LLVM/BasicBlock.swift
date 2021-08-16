@@ -102,8 +102,14 @@ public struct BasicBlock: BasicBlockRef {
     ///
     /// - Parameter position: The basic block that acts as a position before
     ///   which this block will be moved.
-    public func moveBasicBlockBefore(position: BasicBlock) {
-        LLVMMoveBasicBlockBefore(basicBlockRef, position.basicBlockRef)
+    public func moveBasicBlockBefore(position: BasicBlockRef) {
+        Self.moveBasicBlockBefore(basicBlock: self, position: position)
+    }
+
+    /// Given that this block and a given block share a parent function, move this
+    /// block before the given block in that function's basic block list.
+    public static func moveBasicBlockBefore(basicBlock: BasicBlockRef, position: BasicBlockRef) {
+        LLVMMoveBasicBlockBefore(basicBlock.basicBlockRef, position.basicBlockRef)
     }
 
     /// Given that this block and a given block share a parent function, move this
@@ -111,51 +117,85 @@ public struct BasicBlock: BasicBlockRef {
     ///
     /// - Parameter position: The basic block that acts as a position after
     ///   which this block will be moved.
-    public func moveBasicBlockAfter(position: BasicBlock) {
-        LLVMMoveBasicBlockAfter(basicBlockRef, position.basicBlockRef)
+    public func moveBasicBlockAfter(position: BasicBlockRef) {
+        Self.moveBasicBlockAfter(basicBlock: self, position: position)
+    }
+
+    /// Given that this block and a given block share a parent function, move this
+    /// block after the given block in that function's basic block list.
+    public static func moveBasicBlockAfter(basicBlock: BasicBlockRef, position: BasicBlockRef) {
+        LLVMMoveBasicBlockAfter(basicBlock.basicBlockRef, position.basicBlockRef)
     }
 
     /// Retrieves the name of this basic block.
     public var getBasicBlockName: String {
-        guard let cString = LLVMGetBasicBlockName(llvm) else { return "" }
+        Self.getBasicBlockName(basicBlock: self)
+    }
+
+    /// Retrieves the name of this basic block.
+    public static func getBasicBlockName(basicBlock: BasicBlockRef) -> String {
+        guard let cString = LLVMGetBasicBlockName(basicBlock.basicBlockRef) else { return "" }
         return String(cString: cString)
     }
 
     /// Returns the first instruction in the basic block, if it exists.
     public var getFirstInstruction: ValueRef? {
-        guard let val = LLVMGetFirstInstruction(llvm) else { return nil }
-        return Instruction(llvm: val)
+        Self.getFirstInstruction(basicBlock: self)
+    }
+
+    /// Returns the first instruction in the basic block, if it exists.
+    public static func getFirstInstruction(basicBlock: BasicBlockRef) -> ValueRef? {
+        guard let val = LLVMGetFirstInstruction(basicBlock.basicBlockRef) else { return nil }
+        return Values(llvm: val)
     }
 
     /// Returns the first instruction in the basic block, if it exists.
     public var getLastInstruction: ValueRef? {
-        guard let val = LLVMGetLastInstruction(llvm) else { return nil }
-        return Instruction(llvm: val)
+        Self.getLastInstruction(basicBlock: self)
     }
 
-//    /// Returns the terminator instruction if this basic block is well formed or
-//    /// `nil` if it is not well formed.
-//    public var terminator: TerminatorInstruction? {
-//        guard let term = LLVMGetBasicBlockTerminator(llvm) else { return nil }
-//        return TerminatorInstruction(llvm: term)
-//    }
+    /// Returns the first instruction in the basic block, if it exists.
+    public static func getLastInstruction(basicBlock: BasicBlockRef) -> ValueRef? {
+        guard let val = LLVMGetLastInstruction(basicBlock.basicBlockRef) else { return nil }
+        return Values(llvm: val)
+    }
 
     /// Returns the parent function of this basic block, if it exists.
     public var getBasicBlockParent: Function? {
-        guard let functionRef = LLVMGetBasicBlockParent(llvm) else { return nil }
+        Self.getBasicBlockParent(basicBlock: self)
+    }
+
+    /// Returns the parent function of this basic block, if it exists.
+    public static func getBasicBlockParent(basicBlock: BasicBlockRef) -> Function? {
+        guard let functionRef = LLVMGetBasicBlockParent(basicBlock.basicBlockRef) else { return nil }
         return Function(llvm: functionRef)
     }
 
     /// Returns the basic block following this basic block, if it exists.
-    public var getNextBasicBlock: BasicBlock? {
-        guard let blockRef = LLVMGetNextBasicBlock(llvm) else { return nil }
+    public var getNextBasicBlock: Self? {
+        Self.getNextBasicBlock(basicBlock: self)
+    }
+
+    /// Returns the basic block following this basic block, if it exists.
+    public static func getNextBasicBlock(basicBlock: BasicBlockRef) -> BasicBlock? {
+        guard let blockRef = LLVMGetNextBasicBlock(basicBlock.basicBlockRef) else { return nil }
         return BasicBlock(llvm: blockRef)
     }
 
     /// Returns the basic block before this basic block, if it exists.
     public var getPreviousBasicBlock: BasicBlock? {
-        guard let blockRef = LLVMGetPreviousBasicBlock(llvm) else { return nil }
+        Self.getPreviousBasicBlock(basicBlock: self)
+    }
+
+    /// Returns the basic block before this basic block, if it exists.
+    public static func getPreviousBasicBlock(basicBlock: BasicBlockRef) -> BasicBlock? {
+        guard let blockRef = LLVMGetPreviousBasicBlock(basicBlock.basicBlockRef) else { return nil }
         return BasicBlock(llvm: blockRef)
+    }
+
+    /// Removes this basic block from a function but keeps it alive.
+    public func removeBasicBlockFromParent() {
+        Self.removeBasicBlockFromParent(basicBlock: self)
     }
 
     /// Removes this basic block from a function but keeps it alive.
@@ -163,40 +203,67 @@ public struct BasicBlock: BasicBlockRef {
     /// - note: To ensure correct removal of the block, you must invalidate any
     ///         references to it and its child instructions.  The block must also
     ///         have no successor blocks that make reference to it.
-    public func removeBasicBlockFromParent() {
-        LLVMRemoveBasicBlockFromParent(llvm)
+    public static func removeBasicBlockFromParent(basicBlock: BasicBlockRef) {
+        LLVMRemoveBasicBlockFromParent(basicBlock.basicBlockRef)
     }
 
     /// Moves this basic block before the given basic block.
-    public func moveBasicBlockBefore(block: BasicBlock) {
-        LLVMMoveBasicBlockBefore(llvm, block.llvm)
+    public func moveBasicBlockBefore(block: BasicBlockRef) {
+        Self.moveBasicBlockBefore(basicBlock: self, block: block)
+    }
+
+    /// Moves this basic block before the given basic block.
+    public static func moveBasicBlockBefore(basicBlock: BasicBlockRef, block: BasicBlockRef) {
+        LLVMMoveBasicBlockBefore(basicBlock.basicBlockRef, block.basicBlockRef)
     }
 
     /// Moves this basic block after the given basic block.
-    public func moveBasicBlockAfter(block: BasicBlock) {
-        LLVMMoveBasicBlockAfter(llvm, block.llvm)
+    public func moveBasicBlockAfter(block: BasicBlockRef) {
+        Self.moveBasicBlockAfter(basicBlock: self, block: block)
+    }
+
+    /// Moves this basic block after the given basic block.
+    public static func moveBasicBlockAfter(basicBlock: BasicBlockRef, block: BasicBlockRef) {
+        LLVMMoveBasicBlockAfter(basicBlock.basicBlockRef, block.basicBlockRef)
     }
 
     /// Remove a basic block from a function and delete it.
     /// This deletes the basic block from its containing function and deletes
     /// the basic block itself.
-    public var LLVMDeleteBasicBlock {
-        LLVMDeleteBasicBlock(llvm)
+    public func deleteBasicBlock() {
+        Self.deleteBasicBlock(basicBlockRef: self)
+    }
+
+    /// Remove a basic block from a function and delete it.
+    /// This deletes the basic block from its containing function and deletes
+    /// the basic block itself.
+    public static func deleteBasicBlock(basicBlockRef: BasicBlockRef) {
+        LLVMDeleteBasicBlock(basicBlockRef.basicBlockRef)
     }
 
     /// Convert a basic block instance to a value type.
-    public var bsicBlockAsValue: ValueRef {
-        LLVMBasicBlockAsValue(llvm)
+    public var basicBlockAsValue: ValueRef {
+        Self.basicBlockAsValue(basicBlockRef: self)
     }
 
-  
+    /// Convert a basic block instance to a value type.
+    public static func basicBlockAsValue(basicBlockRef: BasicBlockRef) -> ValueRef {
+        return Values(llvm: LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef)!)
+    }
+
+    //    /// Returns the terminator instruction if this basic block is well formed or
+    //    /// `nil` if it is not well formed.
+    //    public var terminator: TerminatorInstruction? {
+    //        guard let term = LLVMGetBasicBlockTerminator(llvm) else { return nil }
+    //        return TerminatorInstruction(llvm: term)
+    //    }
+
     // LLVMBool     LLVMValueIsBasicBlock (LLVMValueRef Val)
 //    Determine whether an LLVMValueRef is itself a basic block.
 //
     // LLVMBasicBlockRef     LLVMValueAsBasicBlock (LLVMValueRef Val)
 //    Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
 //
-
 
     // unsigned     LLVMCountBasicBlocks (LLVMValueRef Fn)
 //    Obtain the number of basic blocks in a function.
