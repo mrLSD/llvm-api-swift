@@ -251,26 +251,33 @@ public struct BasicBlock: BasicBlockRef {
         return Values(llvm: LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef)!)
     }
 
-    //    /// Returns the terminator instruction if this basic block is well formed or
-    //    /// `nil` if it is not well formed.
-    //    public var terminator: TerminatorInstruction? {
-    //        guard let term = LLVMGetBasicBlockTerminator(llvm) else { return nil }
-    //        return TerminatorInstruction(llvm: term)
-    //    }
+    /// Determine whether an LLVMValueRef is itself a basic block.
+    public static func valueIsBasicBlock(value: ValueRef) -> Bool {
+        LLVMValueIsBasicBlock(value.valueRef) != 0
+    }
 
-    // LLVMBool     LLVMValueIsBasicBlock (LLVMValueRef Val)
-//    Determine whether an LLVMValueRef is itself a basic block.
-//
-    // LLVMBasicBlockRef     LLVMValueAsBasicBlock (LLVMValueRef Val)
-//    Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
-//
+    /// Convert an `LLVMValueRef` to an `LLVMBasicBlockRef` instance.
+    public static func valueAsBasicBlock(value: ValueRef) -> BasicBlockRef {
+        Self(llvm: LLVMValueAsBasicBlock(value.valueRef))
+    }
 
-    // unsigned     LLVMCountBasicBlocks (LLVMValueRef Fn)
-//    Obtain the number of basic blocks in a function.
-//
-    // void     LLVMGetBasicBlocks (LLVMValueRef Fn, LLVMBasicBlockRef *BasicBlocks)
-//    Obtain all of the basic blocks in a function.
-//
+    /// Obtain the number of basic blocks in a function.
+    /// For specified `functionValueRef`
+    public static func countBasicBlocks(functionValueRef: ValueRef) -> UInt32 {
+        LLVMCountBasicBlocks(functionValueRef.valueRef)
+    }
+
+    /// Obtain all of the basic blocks in a function.
+    /// Return array  of BasicBlockRef instances.
+    public static func getBasicBlocks(functionValueRef: ValueRef) -> [BasicBlockRef] {
+        let blockCount = Self.countBasicBlocks(functionValueRef: functionValueRef)
+        var basicBlocks = [LLVMBasicBlockRef?](repeating: nil, count: Int(blockCount))
+        basicBlocks.withUnsafeMutableBufferPointer { bufferPointer in
+            LLVMGetBasicBlocks(functionValueRef.valueRef, bufferPointer.baseAddress)
+        }
+        return basicBlocks.map { BasicBlock(llvm: $0!) }
+    }
+
     // LLVMBasicBlockRef     LLVMGetFirstBasicBlock (LLVMValueRef Fn)
 //    Obtain the first basic block in a function.
 //
@@ -305,6 +312,12 @@ public struct BasicBlock: BasicBlockRef {
 //    Insert a basic block in a function using the global context.
 //
 
+    //    /// Returns the terminator instruction if this basic block is well formed or
+    //    /// `nil` if it is not well formed.
+    //    public var terminator: TerminatorInstruction? {
+    //        guard let term = LLVMGetBasicBlockTerminator(llvm) else { return nil }
+    //        return TerminatorInstruction(llvm: term)
+    //    }
 //    /// Returns a sequence of the Instructions that make up this basic block.
 //    public var instructions: AnySequence<IRInstruction> {
 //        var current = firstInstruction
