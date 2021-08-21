@@ -280,35 +280,47 @@ public struct BasicBlock: BasicBlockRef {
     }
 
     /// Obtain the first basic block in a function.
-    public func getFirstBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+    public static func getFirstBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
         guard let blockRef = LLVMGetFirstBasicBlock(funcValueRef.valueRef) else { return nil }
         return Self(llvm: blockRef)
     }
 
     ///  Obtain the last basic block in a function.
-    public func getLastBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+    public static func getLastBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
         guard let blockRef = LLVMGetLastBasicBlock(funcValueRef.valueRef) else { return nil }
         return Self(llvm: blockRef)
     }
 
     /// Obtain the basic block that corresponds to the entry point of a function.
-    public func getEntryBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+    public static func getEntryBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
         guard let blockRef = LLVMGetEntryBasicBlock(funcValueRef.valueRef) else { return nil }
         return Self(llvm: blockRef)
     }
 
-    // void     LLVMInsertExistingBasicBlockAfterInsertBlock (LLVMBuilderRef Builder, LLVMBasicBlockRef BB)
-//    Insert the given basic block after the insertion point of the given builder.
-//
-    // void     LLVMAppendExistingBasicBlock (LLVMValueRef Fn, LLVMBasicBlockRef BB)
-//    Append the given basic block to the basic block list of the given function.
-//
-    // LLVMBasicBlockRef     LLVMAppendBasicBlockInContext (LLVMContextRef C, LLVMValueRef Fn, const char *Name)
-//    Append a basic block to the end of a function.
-//
-    // LLVMBasicBlockRef     LLVMAppendBasicBlock (LLVMValueRef Fn, const char *Name)
-//    Append a basic block to the end of a function using the global context.
-//
+    /// Insert the given basic block after the insertion point of the given builder.
+    /// The insertion point must be valid.
+    /// - note: for example for builder before call make sure use `LLVMPositionBuilderAtEnd` or similar fucntion.
+    public static func insertExistingBasicBlockAfterInsertBlock(builderRef: BuilderRef, blockRef: BasicBlockRef) {
+        LLVMInsertExistingBasicBlockAfterInsertBlock(builderRef.builderRef, blockRef.basicBlockRef)
+    }
+
+    /// Append the given basic block to the basic block list of the given function.
+    public static func appendExistingBasicBlock(funcValueRef: ValueRef, blockRef: BasicBlockRef) {
+        LLVMAppendExistingBasicBlock(funcValueRef.valueRef, blockRef.basicBlockRef)
+    }
+
+    /// Append named basic block to the end of a function in Context.
+    /// Return BasicBlock
+    public static func appendBasicBlockInContext(contextRef: ContextRef, funcValueRef: ValueRef, blockName: String) -> BasicBlockRef {
+        Self(llvm: LLVMAppendBasicBlockInContext(contextRef.contextRef, funcValueRef.valueRef, blockName))
+    }
+
+    /// Append named basic block to the end of a function using the global context.
+    /// Return BasicBlock
+    public static func appendBasicBlock(funcValueRef: ValueRef, blockName: String) -> BasicBlockRef {
+        Self(llvm: LLVMAppendBasicBlock(funcValueRef.valueRef, blockName))
+    }
+
     // LLVMBasicBlockRef     LLVMInsertBasicBlockInContext (LLVMContextRef C, LLVMBasicBlockRef BB, const char *Name)
 //    Insert a basic block in a function before another basic block.
 //

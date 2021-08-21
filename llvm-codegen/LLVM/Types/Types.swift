@@ -16,7 +16,7 @@ public protocol BinaryRef {
 
 /// Represents an LLVM basic block builder.
 public protocol BuilderRef {
-    var BuilderRef: LLVMBuilderRef { get }
+    var builderRef: LLVMBuilderRef { get }
 }
 
 public protocol ComdatRef {
