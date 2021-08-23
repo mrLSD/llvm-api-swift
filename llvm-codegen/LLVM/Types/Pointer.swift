@@ -74,13 +74,14 @@ public struct PointerType: TypeRef {
     }
 
     // Get the element type of an Pointer  type.
-    public var getElementType: TypeRef {
+    public var getElementType: TypeRef? {
         Self.getElementType(typeRef: self)
     }
 
     /// Get the element type of an Pointer  type.
-    public static func getElementType(typeRef: TypeRef) -> TypeRef {
-        Types(llvm: LLVMGetElementType(typeRef.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef? {
+        guard let newTypeRef = LLVMGetElementType(typeRef.typeRef) else { return nil }
+        return Types(llvm: newTypeRef)
     }
 }
 

@@ -26,7 +26,7 @@ public class VectorType: TypeRef {
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = VectorType.getElementType(typeRef: typeRef)
+        self.elementType = VectorType.getElementType(typeRef: typeRef)!
         self.count = VectorType.getVectorSize(typeRef: typeRef)
         self.llvm = typeRef.typeRef
     }
@@ -51,13 +51,14 @@ public class VectorType: TypeRef {
     }
 
     /// Get the element type of the currect vector  type.
-    public var getElementType: TypeRef {
+    public var getElementType: TypeRef? {
         Self.getElementType(typeRef: self)
     }
 
     /// Get the element type of an vector  type.
-    public static func getElementType(typeRef: TypeRef) -> TypeRef {
-        Types(llvm: LLVMGetElementType(typeRef.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef? {
+        guard let newTypeRef = LLVMGetElementType(typeRef.typeRef) else { return nil }
+        return Types(llvm: newTypeRef)
     }
 
     /// Returns type's subtypes for current vector

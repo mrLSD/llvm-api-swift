@@ -242,13 +242,14 @@ public struct BasicBlock: BasicBlockRef {
     }
 
     /// Convert a basic block instance to a value type.
-    public var basicBlockAsValue: ValueRef {
+    public var basicBlockAsValue: ValueRef? {
         Self.basicBlockAsValue(basicBlockRef: self)
     }
 
     /// Convert a basic block instance to a value type.
-    public static func basicBlockAsValue(basicBlockRef: BasicBlockRef) -> ValueRef {
-        Values(llvm: LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef)!)
+    public static func basicBlockAsValue(basicBlockRef: BasicBlockRef) -> ValueRef? {
+        guard let valueRef = LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef) else { return nil }
+        return Values(llvm: valueRef)
     }
 
     /// Determine whether an LLVMValueRef is itself a basic block.
@@ -290,12 +291,12 @@ public struct BasicBlock: BasicBlockRef {
         return Self(llvm: blockRef)
     }
 
-    // LLVMBasicBlockRef     LLVMGetPreviousBasicBlock (LLVMBasicBlockRef BB)
-//    Go backwards in a basic block iterator.
-//
-    // LLVMBasicBlockRef     LLVMGetEntryBasicBlock (LLVMValueRef Fn)
-//    Obtain the basic block that corresponds to the entry point of a function.
-//
+    /// Obtain the basic block that corresponds to the entry point of a function.
+    public func getEntryBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+        guard let blockRef = LLVMGetEntryBasicBlock(funcValueRef.valueRef) else { return nil }
+        return Self(llvm: blockRef)
+    }
+
     // void     LLVMInsertExistingBasicBlockAfterInsertBlock (LLVMBuilderRef Builder, LLVMBasicBlockRef BB)
 //    Insert the given basic block after the insertion point of the given builder.
 //

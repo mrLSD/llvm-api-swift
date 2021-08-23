@@ -123,7 +123,7 @@ public extension TypeRef {
         case .structTypeKind: return StructType(typeRef: self)
         case .arrayTypeKind: return ArrayType(typeRef: self)
         case .pointerTypeKind:
-            let pointee = PointerType.getElementType(typeRef: self)
+            let pointee = PointerType.getElementType(typeRef: self)!
             let addressSpace = PointerType.getPointerAddressSpace(typeRef: self)
             return PointerType(pointee: pointee, addressSpace: addressSpace)
         case .vectorTypeKind: return VectorType(typeRef: self)

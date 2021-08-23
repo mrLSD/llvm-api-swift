@@ -100,13 +100,14 @@ public struct StructType: TypeRef {
     }
 
     /// Get the type of the element at a given index in the current structure.
-    public func getTypeAtIndex(index: UInt32) -> TypeRef {
+    public func getTypeAtIndex(index: UInt32) -> TypeRef? {
         Self.structGetTypeAtIndex(typeRef: self, index: index)
     }
 
     /// Get the type of the element at a given index in the structure.
-    public static func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef {
-        Types(llvm: LLVMStructGetTypeAtIndex(typeRef.typeRef, index)!)
+    public static func structGetTypeAtIndex(typeRef: TypeRef, index: UInt32) -> TypeRef? {
+        guard let typeRef = LLVMStructGetTypeAtIndex(typeRef.typeRef, index) else { return nil }
+        return Types(llvm: typeRef)
     }
 
     /// Obtain the name of the current structure.

@@ -43,7 +43,7 @@ public struct ArrayType: TypeRef {
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = ArrayType.getElementType(typeRef: typeRef)
+        self.elementType = ArrayType.getElementType(typeRef: typeRef)!
         self.count = .x64(ArrayType.getArrayLength2(typeRef: typeRef))
         self.llvm = typeRef.typeRef
     }
@@ -69,13 +69,14 @@ public struct ArrayType: TypeRef {
     }
 
     /// Get the element type of the current array  type.
-    public var getElementType: TypeRef {
+    public var getElementType: TypeRef? {
         Self.getElementType(typeRef: self)
     }
 
     /// Get the element type of an array  type.
-    public static func getElementType(typeRef: TypeRef) -> TypeRef {
-        Types(llvm: LLVMGetElementType(typeRef.typeRef)!)
+    public static func getElementType(typeRef: TypeRef) -> TypeRef? {
+        guard let newTypeRef = LLVMGetElementType(typeRef.typeRef) else { return nil }
+        return Types(llvm: newTypeRef)
     }
 
     /// Return the number of types in the derived type for the current array.
