@@ -172,12 +172,12 @@ public struct BasicBlock: BasicBlockRef {
     }
 
     /// Returns the basic block following this basic block, if it exists.
-    public var getNextBasicBlock: Self? {
+    public var getNextBasicBlock: BasicBlockRef? {
         Self.getNextBasicBlock(basicBlock: self)
     }
 
     /// Returns the basic block following this basic block, if it exists.
-    public static func getNextBasicBlock(basicBlock: BasicBlockRef) -> BasicBlock? {
+    public static func getNextBasicBlock(basicBlock: BasicBlockRef) -> BasicBlockRef? {
         guard let blockRef = LLVMGetNextBasicBlock(basicBlock.basicBlockRef) else { return nil }
         return BasicBlock(llvm: blockRef)
     }
@@ -248,45 +248,48 @@ public struct BasicBlock: BasicBlockRef {
 
     /// Convert a basic block instance to a value type.
     public static func basicBlockAsValue(basicBlockRef: BasicBlockRef) -> ValueRef {
-        return Values(llvm: LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef)!)
+        Values(llvm: LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef)!)
     }
 
     /// Determine whether an LLVMValueRef is itself a basic block.
-    public static func valueIsBasicBlock(value: ValueRef) -> Bool {
-        LLVMValueIsBasicBlock(value.valueRef) != 0
+    public static func valueIsBasicBlock(valueRef: ValueRef) -> Bool {
+        LLVMValueIsBasicBlock(valueRef.valueRef) != 0
     }
 
     /// Convert an `LLVMValueRef` to an `LLVMBasicBlockRef` instance.
-    public static func valueAsBasicBlock(value: ValueRef) -> BasicBlockRef {
-        Self(llvm: LLVMValueAsBasicBlock(value.valueRef))
+    public static func valueAsBasicBlock(valueRef: ValueRef) -> BasicBlockRef {
+        Self(llvm: LLVMValueAsBasicBlock(valueRef.valueRef))
     }
 
     /// Obtain the number of basic blocks in a function.
     /// For specified `functionValueRef`
-    public static func countBasicBlocks(functionValueRef: ValueRef) -> UInt32 {
-        LLVMCountBasicBlocks(functionValueRef.valueRef)
+    public static func countBasicBlocks(funcValueRef: ValueRef) -> UInt32 {
+        LLVMCountBasicBlocks(funcValueRef.valueRef)
     }
 
     /// Obtain all of the basic blocks in a function.
     /// Return array  of BasicBlockRef instances.
-    public static func getBasicBlocks(functionValueRef: ValueRef) -> [BasicBlockRef] {
-        let blockCount = Self.countBasicBlocks(functionValueRef: functionValueRef)
+    public static func getBasicBlocks(funcValueRef: ValueRef) -> [BasicBlockRef] {
+        let blockCount = Self.countBasicBlocks(funcValueRef: funcValueRef)
         var basicBlocks = [LLVMBasicBlockRef?](repeating: nil, count: Int(blockCount))
         basicBlocks.withUnsafeMutableBufferPointer { bufferPointer in
-            LLVMGetBasicBlocks(functionValueRef.valueRef, bufferPointer.baseAddress)
+            LLVMGetBasicBlocks(funcValueRef.valueRef, bufferPointer.baseAddress)
         }
-        return basicBlocks.map { BasicBlock(llvm: $0!) }
+        return basicBlocks.map { Self(llvm: $0!) }
     }
 
-    // LLVMBasicBlockRef     LLVMGetFirstBasicBlock (LLVMValueRef Fn)
-//    Obtain the first basic block in a function.
-//
-    // LLVMBasicBlockRef     LLVMGetLastBasicBlock (LLVMValueRef Fn)
-//    Obtain the last basic block in a function.
-//
-    // LLVMBasicBlockRef     LLVMGetNextBasicBlock (LLVMBasicBlockRef BB)
-//    Advance a basic block iterator.
-//
+    /// Obtain the first basic block in a function.
+    public func getFirstBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+        guard let blockRef = LLVMGetFirstBasicBlock(funcValueRef.valueRef) else { return nil }
+        return Self(llvm: blockRef)
+    }
+
+    ///  Obtain the last basic block in a function.
+    public func getLastBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
+        guard let blockRef = LLVMGetLastBasicBlock(funcValueRef.valueRef) else { return nil }
+        return Self(llvm: blockRef)
+    }
+
     // LLVMBasicBlockRef     LLVMGetPreviousBasicBlock (LLVMBasicBlockRef BB)
 //    Go backwards in a basic block iterator.
 //
