@@ -280,6 +280,12 @@ public struct BasicBlock: BasicBlockRef {
     }
 
     /// Obtain the first basic block in a function.
+    ///
+    /// The first basic block in a function is special in two ways: it is
+    /// immediately executed on entrance to the function, and it is not allowed to
+    /// have predecessor basic blocks (i.e. there can not be any branches to the
+    /// entry block of a function). Because the block can have no predecessors, it
+    /// also cannot have any PHI nodes.
     public static func getFirstBasicBlock(funcValueRef: ValueRef) -> BasicBlockRef? {
         guard let blockRef = LLVMGetFirstBasicBlock(funcValueRef.valueRef) else { return nil }
         return Self(llvm: blockRef)
@@ -321,47 +327,36 @@ public struct BasicBlock: BasicBlockRef {
         Self(llvm: LLVMAppendBasicBlock(funcValueRef.valueRef, blockName))
     }
 
-    // LLVMBasicBlockRef     LLVMInsertBasicBlockInContext (LLVMContextRef C, LLVMBasicBlockRef BB, const char *Name)
-//    Insert a basic block in a function before another basic block.
-//
-    // LLVMBasicBlockRef     LLVMInsertBasicBlock (LLVMBasicBlockRef InsertBeforeBB, const char *Name)
-//    Insert a basic block in a function using the global context.
-//
+    /// Insert named basic block in a function before another basic block in Context.
+    /// - parameter context: context of insertion
+    /// - parameter before: before BasicBlock
+    /// - parameter name: name of block
+    /// Return BasicBlock
+    public static func insertBasicBlockInContext(contextRef: ContextRef, before: BasicBlockRef, blockName: String) -> BasicBlockRef {
+        Self(llvm: LLVMInsertBasicBlockInContext(contextRef.contextRef, before.basicBlockRef, blockName))
+    }
 
-    //    /// Returns the terminator instruction if this basic block is well formed or
-    //    /// `nil` if it is not well formed.
-    //    public var terminator: TerminatorInstruction? {
-    //        guard let term = LLVMGetBasicBlockTerminator(llvm) else { return nil }
-    //        return TerminatorInstruction(llvm: term)
-    //    }
-//    /// Returns a sequence of the Instructions that make up this basic block.
-//    public var instructions: AnySequence<IRInstruction> {
-//        var current = firstInstruction
-//        return AnySequence<IRInstruction> {
-//            return AnyIterator<IRInstruction> {
-//                defer { current = current?.next() }
-//                return current
-//            }
-//        }
-//    }
+    /// Insert named basic block in a function using the global context.
+    /// - parameter before: before BasicBlock
+    /// - parameter name: name of block
+    /// Return BasicBlock
+    public static func insertBasicBlock(before: BasicBlockRef, blockName: String) -> BasicBlockRef {
+        Self(llvm: LLVMInsertBasicBlock(before.basicBlockRef, blockName))
+    }
+
+    /// Returns the terminator instruction for current block. If a basic block is well formed or `nil` if it is not well formed.
+    public var getBasicBlockTerminator: ValueRef? {
+        guard let valueRef = LLVMGetBasicBlockTerminator(llvm) else { return nil }
+        return Values(llvm: valueRef)
+    }
+
+    /// Returns the terminator instruction if a basic block is well formed or `nil` if it is not well formed.
+    /// The returned LLVMValueRef corresponds to an llvm::Instruction.
+    public static func getBasicBlockTerminator(basicBlockRef: BasicBlockRef) -> ValueRef? {
+        guard let valueRef = LLVMGetBasicBlockTerminator(basicBlockRef.basicBlockRef) else { return nil }
+        return Values(llvm: valueRef)
+    }
 }
-
-// public extension BasicBlock {
-//    /// An `Address` represents a function-relative address of a basic block for
-//    /// use with the `indirectbr` instruction.
-//    struct Address: IRValue {
-//        let llvm: LLVMValueRef
-//
-//        init(llvm: LLVMValueRef) {
-//            self.llvm = llvm
-//        }
-//
-//        /// Retrieves the underlying LLVM value object.
-//        public func asLLVM() -> LLVMValueRef {
-//            return llvm
-//        }
-//    }
-// }
 
 extension BasicBlock: Equatable {
     public static func == (lhs: BasicBlock, rhs: BasicBlock) -> Bool {

@@ -90,3 +90,9 @@ public struct Function: ValueRef {
         self.llvm = llvm
     }
 }
+
+extension Function: Equatable {
+    public static func == (lhs: Function, rhs: Function) -> Bool {
+        return lhs.valueRef == rhs.valueRef
+    }
+}
