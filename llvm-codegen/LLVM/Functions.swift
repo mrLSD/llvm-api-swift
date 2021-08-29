@@ -89,6 +89,43 @@ public struct Function: ValueRef {
     public init(llvm: LLVMValueRef) {
         self.llvm = llvm
     }
+
+    /// Get the number of basic blocks for current function
+    public var countBasicBlocks: UInt32 {
+        BasicBlock.countBasicBlocks(funcValueRef: self)
+    }
+
+    /// Get all of the basic blocks in the current function.
+    public var getBasicBlocks: [BasicBlockRef] {
+        BasicBlock.getBasicBlocks(funcValueRef: self)
+    }
+
+    /// Get the first basic block for current function.
+    public var getFirstBasicBlock: BasicBlockRef? {
+        BasicBlock.getFirstBasicBlock(funcValueRef: self)
+    }
+
+    /// Get the last basic block for current function.
+    public var getLastBasicBlock: BasicBlockRef? {
+        BasicBlock.getLastBasicBlock(funcValueRef: self)
+    }
+
+    /// Get the basic block that corresponds to the entry point of the current function.
+    public var getEntryBasicBlock: BasicBlockRef? { BasicBlock.getEntryBasicBlock(funcValueRef: self) }
+
+    /// Append the given basic block to the basic block list for the current function.
+    public func appendExistingBasicBlock(funcValueRef: ValueRef, blockRef: BasicBlockRef) { BasicBlock.appendExistingBasicBlock(funcValueRef: self, blockRef: blockRef)
+    }
+
+    /// Append named basic block to the end of a function in Context.
+    /// Return BasicBlock
+    public func appendBasicBlockInContext(contextRef: ContextRef, blockName: String) -> BasicBlockRef { BasicBlock.appendBasicBlockInContext(contextRef: contextRef, funcValueRef: self, blockName: blockName)
+    }
+
+    /// Append named basic block to the end of the current function using the global context.
+    /// Return BasicBlock
+    public func appendBasicBlock(blockName: String) -> BasicBlockRef { BasicBlock.appendBasicBlock(funcValueRef: self, blockName: blockName)
+    }
 }
 
 extension Function: Equatable {
