@@ -6,10 +6,10 @@ import PackageDescription
 let package = Package(
     name: "llvm-codegen",
     products: [
-        .executable(name: "llvm-codegen", targets: ["llvm-codegen"])
+        .executable(name: "llvm-codegen", targets: ["llvm-codegen"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0")
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
     ],
     targets: [
         .executableTarget(
@@ -19,7 +19,7 @@ let package = Package(
                 .product(
                     name: "ArgumentParser",
                     package: "swift-argument-parser"
-                )
+                ),
             ],
             path: "llvm-codegen/cli"
         ),
@@ -28,14 +28,14 @@ let package = Package(
             path: "llvm-codegen/CLLVM",
             pkgConfig: "CLLVM",
             providers: [
-                .brew(["llvm"])
+                .brew(["llvm"]),
             ]
         ),
         .target(
             name: "LLVM",
             dependencies: ["CLLVM"],
             path: "llvm-codegen/LLVM"
-        )
+        ),
     ],
     cxxLanguageStandard: .cxx20
 )

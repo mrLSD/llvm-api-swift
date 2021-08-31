@@ -114,7 +114,7 @@ public struct Function: ValueRef {
     public var getEntryBasicBlock: BasicBlockRef? { BasicBlock.getEntryBasicBlock(funcValueRef: self) }
 
     /// Append the given basic block to the basic block list for the current function.
-    public func appendExistingBasicBlock(funcValueRef: ValueRef, blockRef: BasicBlockRef) { BasicBlock.appendExistingBasicBlock(funcValueRef: self, blockRef: blockRef)
+    public func appendExistingBasicBlock(funcValueRef _: ValueRef, blockRef: BasicBlockRef) { BasicBlock.appendExistingBasicBlock(funcValueRef: self, blockRef: blockRef)
     }
 
     /// Append named basic block to the end of a function in Context.

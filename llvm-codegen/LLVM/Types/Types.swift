@@ -214,7 +214,7 @@ public struct Types: TypeRef {
 
     /// Init `Types` by `TypeRef`
     public init(typeRef: TypeRef) {
-        self.llvm = typeRef.typeRef
+        llvm = typeRef.typeRef
     }
 
     /// Init `Types` by `LLVMTypeRef`

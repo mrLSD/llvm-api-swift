@@ -21,21 +21,21 @@ public class VectorType: TypeRef {
     public init(elementType: TypeRef, count: UInt32) {
         self.elementType = elementType
         self.count = count
-        self.llvm = LLVMVectorType(elementType.typeRef, count)
+        llvm = LLVMVectorType(elementType.typeRef, count)
     }
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = VectorType.getElementType(typeRef: typeRef)!
-        self.count = VectorType.getVectorSize(typeRef: typeRef)
-        self.llvm = typeRef.typeRef
+        elementType = VectorType.getElementType(typeRef: typeRef)!
+        count = VectorType.getVectorSize(typeRef: typeRef)
+        llvm = typeRef.typeRef
     }
 
     /// Init for pre-init vector for depended class
     init(for vecTy: LLVMTypeRef, elementType: TypeRef, count: UInt32) {
         self.elementType = elementType
         self.count = count
-        self.llvm = vecTy
+        llvm = vecTy
     }
 
     /// Get the (possibly scalable) number of elements in the current vector type.

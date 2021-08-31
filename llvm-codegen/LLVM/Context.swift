@@ -18,6 +18,9 @@ public class Context: ContextRef {
     /// Retrieves the underlying LLVM type object.
     public var contextRef: LLVMContextRef { llvm }
 
+    /// Diagnostic handler type
+    public typealias DiagnosticHandler = @convention(c) (LLVMDiagnosticInfoRef, UnsafeMutableRawPointer?) -> Void
+
     /// Retrieves the global context instance.
     ///
     /// The global context is an particularly convenient instance managed by LLVM
@@ -41,14 +44,34 @@ public class Context: ContextRef {
         self.llvm = llvm
     }
 
+    /// Get the diagnostic handler of current context.
+    public var getContextDiagnosticHandler: DiagnosticHandler? {
+        if let handler = LLVMContextGetDiagnosticHandler(contextRef) {
+            return unsafeBitCast(handler, to: DiagnosticHandler.self)
+        } else {
+            return nil
+        }
+    }
+
+    /// Set the diagnostic handler for current context.
+    public func setContextDiagnosticHandler(handler: LLVMDiagnosticHandler?, diagnosticContext: UnsafeMutableRawPointer?) {
+        LLVMContextSetDiagnosticHandler(contextRef, handler, diagnosticContext)
+    }
+
     /// Returns whether the given context is set to discard all value names.
     ///
     /// If true, only the names of GlobalValue objects will be available in
     /// the IR.  This can be used to save memory and processing time, especially
     /// in release environments.
     public var discardValueNames: Bool {
-        get { return LLVMContextShouldDiscardValueNames(llvm) != 0 }
-        set { LLVMContextSetDiscardValueNames(llvm, newValue.llvm) }
+        get {
+            // Retrieve whether the given context is set to discard all value names.
+            return LLVMContextShouldDiscardValueNames(llvm) != 0
+        }
+        set {
+            // Set whether the given context discards all value names.
+            LLVMContextSetDiscardValueNames(llvm, newValue.llvm)
+        }
     }
 
     /// Deinitialize this value and dispose of its resources.

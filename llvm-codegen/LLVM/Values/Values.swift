@@ -8,7 +8,7 @@ public struct Values: ValueRef {
 
     /// Init `Values` by `ValueRef`
     public init(valueRef: ValueRef) {
-        self.llvm = valueRef.valueRef
+        llvm = valueRef.valueRef
     }
 
     /// Init `Values` by `LLVMValueRef`

@@ -14,7 +14,7 @@ public struct TargetExtType: TypeRef {
     public init(in context: Context, name: String, typeParams: [TypeRef], intParams: [UInt32]) {
         var mutableTypeParams = typeParams.map { $0.typeRef as Optional }
         var mutableIntParams = intParams
-        self.llvm = name.withCString { cName in
+        llvm = name.withCString { cName in
             mutableTypeParams.withUnsafeMutableBufferPointer { typeParamsBuffer in
                 mutableIntParams.withUnsafeMutableBufferPointer { intParamsBuffer in
                     LLVMTargetExtTypeInContext(context.contextRef, cName,

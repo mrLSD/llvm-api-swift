@@ -59,6 +59,6 @@ public struct AddressSpace: Equatable {
     /// Creates and initializes an address space with the given identifier.
     /// - Parameter identifier: The raw, integral address space identifier.
     public init(_ identifier: UInt32) {
-        self.rawValue = identifier
+        rawValue = identifier
     }
 }

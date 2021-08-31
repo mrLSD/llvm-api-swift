@@ -29,7 +29,7 @@ public struct ArrayType: TypeRef {
     public init(elementType: TypeRef, count: UInt32) {
         self.elementType = elementType
         self.count = .x32(count)
-        self.llvm = LLVMArrayType(elementType.typeRef, count)
+        llvm = LLVMArrayType(elementType.typeRef, count)
     }
 
     /// Creates an array type from an underlying element type and count.
@@ -38,14 +38,14 @@ public struct ArrayType: TypeRef {
     public init(elementType: TypeRef, count: UInt64) {
         self.elementType = elementType
         self.count = .x64(count)
-        self.llvm = LLVMArrayType2(elementType.typeRef, count)
+        llvm = LLVMArrayType2(elementType.typeRef, count)
     }
 
     /// Init with predefined `TypeRef`
     public init(typeRef: TypeRef) {
-        self.elementType = ArrayType.getElementType(typeRef: typeRef)!
-        self.count = .x64(ArrayType.getArrayLength2(typeRef: typeRef))
-        self.llvm = typeRef.typeRef
+        elementType = ArrayType.getElementType(typeRef: typeRef)!
+        count = .x64(ArrayType.getArrayLength2(typeRef: typeRef))
+        llvm = typeRef.typeRef
     }
 
     /// Get the length of an array type for 32 bits array size.
