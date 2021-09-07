@@ -101,11 +101,8 @@ public class Context: ContextRef {
     /// Return a string representation of the DiagnosticInfo. Use
     /// LLVMDisposeMessage to free the string.
     public func getDiagInfoDescription(diagnosticInfo: DiagnosticInfoRef) -> String? {
-        if let cString = LLVMGetDiagInfoDescription(diagnosticInfo.diagnosticInfoRef) {
-            return String(cString: cString)
-        } else {
-            return nil
-        }
+        guard let cString = LLVMGetDiagInfoDescription(diagnosticInfo.diagnosticInfoRef) else { return nil }
+        return String(cString: cString)
     }
 
     /// Return an enum LLVMDiagnosticSeverity.
@@ -113,6 +110,8 @@ public class Context: ContextRef {
         LLVMGetDiagInfoSeverity(diagnosticInfo.diagnosticInfoRef)
     }
 
+    /// Get  Metadata KindId by name in current Context.
+    /// Useful for working with Metadata
     public func getMDKindIDInContext(name: String) -> UInt32 {
         name.withCString { cString in
             LLVMGetMDKindIDInContext(llvm, cString, UInt32(name.utf8.count))
@@ -121,7 +120,7 @@ public class Context: ContextRef {
 
     public func getMDKindID(name: String) -> UInt32 {
         name.withCString { cString in
-            LLVMGetMDKindIDInContext(llvm, cString, UInt32(name.utf8.count))
+            LLVMGetMDKindID(cString, UInt32(name.utf8.count))
         }
     }
 
@@ -192,33 +191,44 @@ public class Context: ContextRef {
     //===============================
 
     /// Get the string attribute's kind.
-    public func getStringAttributeKind() {
-        // const char *LLVMGetStringAttributeKind(LLVMAttributeRef A, unsigned *Length);
+    public func getStringAttributeKind(attributeRef: AttributeRef, length: UInt32) -> String? {
+        var mutLength = length
+        guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
+            LLVMGetStringAttributeKind(attributeRef.attributeRef, lengthPtr)
+        }) else { return nil }
+        return String(cString: cString)
     }
 
     /// Get the string attribute's value.
-    public func getStringAttributeValue() {
-        // const char *LLVMGetStringAttributeValue(LLVMAttributeRef A, unsigned *Length);
+    public func getStringAttributeValue(attributeRef: AttributeRef, length: UInt32) -> String? {
+        var mutLength = length
+        guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
+            LLVMGetStringAttributeValue(attributeRef.attributeRef, lengthPtr)
+        }) else { return nil }
+        return String(cString: cString)
     }
 
     /// Check for the  types of attributes.
-    public func isEnumAttribute() {
-        // LLVMBool LLVMIsEnumAttribute(LLVMAttributeRef A);
+    public func isEnumAttribute(attributeRef: AttributeRef) -> Bool {
+        return LLVMIsEnumAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
-    public func isStringAttribute() {
-        // LLVMBool LLVMIsStringAttribute(LLVMAttributeRef A);
+    public func isStringAttribute(attributeRef: AttributeRef) -> Bool {
+        return LLVMIsStringAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
-    public func isTypeAttribute() {
-        // LLVMBool LLVMIsTypeAttribute(LLVMAttributeRef A);
+    public func isTypeAttribute(attributeRef: AttributeRef) -> Bool {
+        return LLVMIsTypeAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Obtain a Type from a context by its registered name.
-    public func getTypeByName2() {
-        // LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C, const char *Name);
+    public func getTypeByName2(name: String) -> TypeRef? {
+        name.withCString { cString in
+            guard let typeRef = LLVMGetTypeByName2(llvm, cString) else { return nil }
+            return Types(llvm: typeRef)
+        }
     }
 
     /// Deinitialize this value and dispose of its resources.
