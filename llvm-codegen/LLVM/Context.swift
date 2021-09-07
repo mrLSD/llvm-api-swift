@@ -21,6 +21,8 @@ public class Context: ContextRef {
     /// Diagnostic handler type
     public typealias DiagnosticHandler = @convention(c) (LLVMDiagnosticInfoRef, UnsafeMutableRawPointer?) -> Void
 
+    public typealias YieldCallback = @convention(c) (LLVMContextRef?, UnsafeMutableRawPointer?) -> Void
+
     /// Retrieves the global context instance.
     ///
     /// The global context is an particularly convenient instance managed by LLVM
@@ -86,37 +88,41 @@ public class Context: ContextRef {
         }
     }
 
-    //===============================
-    //###############################
-    //===============================
-
     /// Get the diagnostic context of this context.
-    public func getDiagnosticContext() {
-        // void *LLVMContextGetDiagnosticContext(LLVMContextRef C);
+    public func getDiagnosticContext() -> UnsafeMutableRawPointer {
+        LLVMContextGetDiagnosticContext(llvm)
     }
 
     /// Set the yield callback function for this context.
-    public func setYieldCallback() {
-        //  void LLVMContextSetYieldCallback(LLVMContextRef C, LLVMYieldCallback Callback,
+    public func setYieldCallback(callback: YieldCallback?, opaqueHandle: UnsafeMutableRawPointer?) {
+        LLVMContextSetYieldCallback(llvm, callback, opaqueHandle)
     }
 
     /// Return a string representation of the DiagnosticInfo. Use
     /// LLVMDisposeMessage to free the string.
-    public func getDiagInfoDescription() {
-        // char *LLVMGetDiagInfoDescription(LLVMDiagnosticInfoRef DI);
+    public func getDiagInfoDescription(diagnosticInfo: DiagnosticInfoRef) -> String? {
+        if let cString = LLVMGetDiagInfoDescription(diagnosticInfo.diagnosticInfoRef) {
+            return String(cString: cString)
+        } else {
+            return nil
+        }
     }
 
-    ///  Return an enum LLVMDiagnosticSeverity.
-    public func getDiagInfoSeverity() {
-        // LLVMDiagnosticSeverity LLVMGetDiagInfoSeverity(LLVMDiagnosticInfoRef DI);
+    /// Return an enum LLVMDiagnosticSeverity.
+    public func getDiagInfoSeverity(diagnosticInfo: DiagnosticInfoRef) -> LLVMDiagnosticSeverity {
+        LLVMGetDiagInfoSeverity(diagnosticInfo.diagnosticInfoRef)
     }
 
-    public func getMDKindIDInContext() {
-        // unsigned LLVMGetMDKindIDInContext(LLVMContextRef C, const char *Name,
+    public func getMDKindIDInContext(name: String) -> UInt32 {
+        name.withCString { cString in
+            LLVMGetMDKindIDInContext(llvm, cString, UInt32(name.utf8.count))
+        }
     }
 
-    public func getMDKindID() {
-        // unsigned LLVMGetMDKindID(const char *Name, unsigned SLen);
+    public func getMDKindID(name: String) -> UInt32 {
+        name.withCString { cString in
+            LLVMGetMDKindIDInContext(llvm, cString, UInt32(name.utf8.count))
+        }
     }
 
     /// Return an unique id given the name of a enum attribute,
@@ -128,43 +134,62 @@ public class Context: ContextRef {
     ///
     /// NB: Attribute names and/or id are subject to change without
     /// going through the C API deprecation cycle.
-    public func getEnumAttributeKindForName() {
-        // unsigned LLVMGetEnumAttributeKindForName(const char *Name, size_t SLen);
+    public func getEnumAttributeKindForName(name: String) -> UInt32 {
+        name.withCString { cString in
+            LLVMGetEnumAttributeKindForName(cString, name.utf8.count)
+        }
     }
 
-    public func getLastEnumAttributeKind() {
-        // unsigned LLVMGetLastEnumAttributeKind(void);
+    public func getLastEnumAttributeKind() -> UInt32 {
+        LLVMGetLastEnumAttributeKind()
+    }
+
+    struct Attribute: AttributeRef {
+        var attributeRef: LLVMAttributeRef
     }
 
     /// Create an enum attribute.
-    public func attributeRef() {
-        // LLVMAttributeRef LLVMCreateEnumAttribute(LLVMContextRef C, unsigned KindID, uint64_t Val);
+    public func createEnumAttribute(kindID: UInt32, value: UInt64) -> AttributeRef? {
+        guard let attributeRef = LLVMCreateEnumAttribute(llvm, kindID, value) else { return nil }
+        return Attribute(attributeRef: attributeRef)
     }
 
     /// Get the unique id corresponding to the enum attribute passed as argument.
-    public func getEnumAttributeKind() {
-        // unsigned LLVMGetEnumAttributeKind(LLVMAttributeRef A);
+    public func getEnumAttributeKind(attributeRef: AttributeRef) -> UInt32 {
+        LLVMGetEnumAttributeKind(attributeRef.attributeRef)
     }
 
     /// Get the enum attribute's value. 0 is returned if none exists.
-    public func getEnumAttributeValue() {
-        // uint64_t LLVMGetEnumAttributeValue(LLVMAttributeRef A);
+    public func getEnumAttributeValue(attributeRef: AttributeRef) -> UInt64 {
+        LLVMGetEnumAttributeValue(attributeRef.attributeRef)
     }
 
     /// Create a type attribute
-    public func createTypeAttribute() {
-        // LLVMAttributeRef LLVMCreateTypeAttribute(LLVMContextRef C, unsigned KindID, LLVMTypeRef type_ref);
+    public func createTypeAttribute(kindID: UInt32, typeRef: TypeRef) -> AttributeRef? {
+        guard let attributeRef = LLVMCreateTypeAttribute(llvm, kindID, typeRef.typeRef) else { return nil }
+        return Attribute(attributeRef: attributeRef)
     }
 
     /// Get the type attribute's value.
-    public func getTypeAttributeValue() {
-        // LLVMTypeRef LLVMGetTypeAttributeValue(LLVMAttributeRef A);
+    public func getTypeAttributeValue(attributeRef: AttributeRef) -> TypeRef? {
+        guard let typeRef = LLVMGetTypeAttributeValue(attributeRef.attributeRef) else { return nil }
+        return Types(llvm: typeRef)
     }
 
     /// Create a string attribute.
-    public func createStringAttribute() {
-        // TODO: LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,
+    public func createStringAttribute(key: String, value: String) -> AttributeRef? {
+        let attribute = key.withCString { keyCString in
+            value.withCString { valueCString in
+                LLVMCreateStringAttribute(llvm, keyCString, UInt32(key.utf8.count), valueCString, UInt32(value.utf8.count))
+            }
+        }
+        guard let attributeRef = attribute else { return nil }
+        return Attribute(attributeRef: attributeRef)
     }
+
+    //===============================
+    // ###############################
+    //===============================
 
     /// Get the string attribute's kind.
     public func getStringAttributeKind() {
