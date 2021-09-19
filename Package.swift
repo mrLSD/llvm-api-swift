@@ -4,28 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "llvm-codegen",
+    name: "llvm-api",
     products: [
-        .executable(name: "llvm-codegen", targets: ["llvm-codegen"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
+        .library(name: "llvm-api", targets: ["LLVM"]),
     ],
     targets: [
-        .executableTarget(
-            name: "llvm-codegen",
-            dependencies: [
-                "LLVM",
-                .product(
-                    name: "ArgumentParser",
-                    package: "swift-argument-parser"
-                ),
-            ],
-            path: "llvm-codegen/cli"
-        ),
         .systemLibrary(
             name: "CLLVM",
-            path: "llvm-codegen/CLLVM",
+            path: "llvm-api/CLLVM",
             pkgConfig: "CLLVM",
             providers: [
                 .brew(["llvm"]),
@@ -34,7 +20,7 @@ let package = Package(
         .target(
             name: "LLVM",
             dependencies: ["CLLVM"],
-            path: "llvm-codegen/LLVM"
+            path: "llvm-api/LLVM"
         ),
     ],
     cxxLanguageStandard: .cxx20
