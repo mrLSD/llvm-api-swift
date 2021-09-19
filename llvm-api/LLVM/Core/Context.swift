@@ -19,7 +19,7 @@ public class Context: ContextRef {
     public var contextRef: LLVMContextRef { llvm }
 
     /// Diagnostic handler type
-    public typealias DiagnosticHandler = @convention(c) (LLVMDiagnosticInfoRef, UnsafeMutableRawPointer?) -> Void
+    public typealias DiagnosticHandler = @convention(c) (LLVMDiagnosticInfoRef?, UnsafeMutableRawPointer?) -> Void
 
     public typealias YieldCallback = @convention(c) (LLVMContextRef?, UnsafeMutableRawPointer?) -> Void
 
@@ -48,16 +48,12 @@ public class Context: ContextRef {
 
     /// Get the diagnostic handler of current context.
     public var getDiagnosticHandler: DiagnosticHandler? {
-        if let handler = LLVMContextGetDiagnosticHandler(contextRef) {
-            return unsafeBitCast(handler, to: DiagnosticHandler.self)
-        } else {
-            return nil
-        }
+        LLVMContextGetDiagnosticHandler(llvm)
     }
 
     /// Set the diagnostic handler for current context.
-    public func setDiagnosticHandler(handler: LLVMDiagnosticHandler?, diagnosticContext: UnsafeMutableRawPointer?) {
-        LLVMContextSetDiagnosticHandler(contextRef, handler, diagnosticContext)
+    public func setDiagnosticHandler(handler: DiagnosticHandler?, diagnosticContext: UnsafeMutableRawPointer?) {
+        LLVMContextSetDiagnosticHandler(llvm, handler.self, diagnosticContext)
     }
 
     /// Retrieve whether the given context is set to discard all value names.
@@ -100,14 +96,15 @@ public class Context: ContextRef {
 
     /// Return a string representation of the DiagnosticInfo. Use
     /// LLVMDisposeMessage to free the string.
-    public func getDiagInfoDescription(diagnosticInfo: DiagnosticInfoRef) -> String? {
+    public static func getDiagInfoDescription(diagnosticInfo: DiagnosticInfoRef) -> String? {
         guard let cString = LLVMGetDiagInfoDescription(diagnosticInfo.diagnosticInfoRef) else { return nil }
+        defer { LLVMDisposeMessage(cString) }
         return String(cString: cString)
     }
 
     /// Return an enum LLVMDiagnosticSeverity.
-    public func getDiagInfoSeverity(diagnosticInfo: DiagnosticInfoRef) -> LLVMDiagnosticSeverity {
-        LLVMGetDiagInfoSeverity(diagnosticInfo.diagnosticInfoRef)
+    public static func getDiagInfoSeverity(diagnosticInfo: DiagnosticInfoRef) -> DiagnosticSeverity? {
+        DiagnosticSeverity(from: LLVMGetDiagInfoSeverity(diagnosticInfo.diagnosticInfoRef))
     }
 
     /// Get  Metadata KindId by name in current Context.
@@ -118,7 +115,7 @@ public class Context: ContextRef {
         }
     }
 
-    public func getMDKindID(name: String) -> UInt32 {
+    public static func getMDKindID(name: String) -> UInt32 {
         name.withCString { cString in
             LLVMGetMDKindID(cString, UInt32(name.utf8.count))
         }
@@ -133,13 +130,14 @@ public class Context: ContextRef {
     ///
     /// NB: Attribute names and/or id are subject to change without
     /// going through the C API deprecation cycle.
-    public func getEnumAttributeKindForName(name: String) -> UInt32 {
+    public static func getEnumAttributeKindForName(name: String) -> UInt32 {
         name.withCString { cString in
             LLVMGetEnumAttributeKindForName(cString, name.utf8.count)
         }
     }
 
-    public func getLastEnumAttributeKind() -> UInt32 {
+    /// Get last enum attribute
+    public static func getLastEnumAttributeKind() -> UInt32 {
         LLVMGetLastEnumAttributeKind()
     }
 
@@ -154,12 +152,12 @@ public class Context: ContextRef {
     }
 
     /// Get the unique id corresponding to the enum attribute passed as argument.
-    public func getEnumAttributeKind(attributeRef: AttributeRef) -> UInt32 {
+    public static func getEnumAttributeKind(attributeRef: AttributeRef) -> UInt32 {
         LLVMGetEnumAttributeKind(attributeRef.attributeRef)
     }
 
     /// Get the enum attribute's value. 0 is returned if none exists.
-    public func getEnumAttributeValue(attributeRef: AttributeRef) -> UInt64 {
+    public static func getEnumAttributeValue(attributeRef: AttributeRef) -> UInt64 {
         LLVMGetEnumAttributeValue(attributeRef.attributeRef)
     }
 
@@ -170,7 +168,7 @@ public class Context: ContextRef {
     }
 
     /// Get the type attribute's value.
-    public func getTypeAttributeValue(attributeRef: AttributeRef) -> TypeRef? {
+    public static func getTypeAttributeValue(attributeRef: AttributeRef) -> TypeRef? {
         guard let typeRef = LLVMGetTypeAttributeValue(attributeRef.attributeRef) else { return nil }
         return Types(llvm: typeRef)
     }
@@ -186,12 +184,8 @@ public class Context: ContextRef {
         return Attribute(attributeRef: attributeRef)
     }
 
-    //===============================
-    // ###############################
-    //===============================
-
     /// Get the string attribute's kind.
-    public func getStringAttributeKind(attributeRef: AttributeRef, length: UInt32) -> String? {
+    public static func getStringAttributeKind(attributeRef: AttributeRef, length: UInt32) -> String? {
         var mutLength = length
         guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
             LLVMGetStringAttributeKind(attributeRef.attributeRef, lengthPtr)
@@ -200,7 +194,7 @@ public class Context: ContextRef {
     }
 
     /// Get the string attribute's value.
-    public func getStringAttributeValue(attributeRef: AttributeRef, length: UInt32) -> String? {
+    public static func getStringAttributeValue(attributeRef: AttributeRef, length: UInt32) -> String? {
         var mutLength = length
         guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
             LLVMGetStringAttributeValue(attributeRef.attributeRef, lengthPtr)
@@ -209,17 +203,17 @@ public class Context: ContextRef {
     }
 
     /// Check for the  types of attributes.
-    public func isEnumAttribute(attributeRef: AttributeRef) -> Bool {
+    public static func isEnumAttribute(attributeRef: AttributeRef) -> Bool {
         return LLVMIsEnumAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
-    public func isStringAttribute(attributeRef: AttributeRef) -> Bool {
+    public static func isStringAttribute(attributeRef: AttributeRef) -> Bool {
         return LLVMIsStringAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
-    public func isTypeAttribute(attributeRef: AttributeRef) -> Bool {
+    public static func isTypeAttribute(attributeRef: AttributeRef) -> Bool {
         return LLVMIsTypeAttribute(attributeRef.attributeRef) != 0
     }
 
