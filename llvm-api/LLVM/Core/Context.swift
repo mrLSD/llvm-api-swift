@@ -95,10 +95,10 @@ public class Context: ContextRef {
     }
 
     /// Return a string representation of the DiagnosticInfo. Use
-    /// LLVMDisposeMessage to free the string.
+    /// `Core.disposeMessage` (`LLVMDisposeMessage`) to free the string.
     public static func getDiagInfoDescription(diagnosticInfo: DiagnosticInfoRef) -> String? {
         guard let cString = LLVMGetDiagInfoDescription(diagnosticInfo.diagnosticInfoRef) else { return nil }
-        defer { LLVMDisposeMessage(cString) }
+        defer { Core.disposeMessage(cString) }
         return String(cString: cString)
     }
 
