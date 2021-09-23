@@ -96,7 +96,7 @@ public extension TypeRef {
     var getConcreteTypeInContext: TypeRef {
         let ty = Types(typeRef: self)
         switch ty.getTypeKind {
-        case .integerTypeKind:
+        case .IntegerTypeKind:
             let intWidth = IntType.getIntTypeWidth(ty: self)
             return switch intWidth {
             case 1: Int1Type(typeRef: self, context: ty.getTypeContext)
@@ -107,33 +107,33 @@ public extension TypeRef {
             case 128: Int128Type(typeRef: self, context: ty.getTypeContext)
             default: IntType(bits: intWidth, in: ty.getTypeContext)
             }
-        case .voidTypeKind: return VoidType(typeRef: self, context: ty.getTypeContext)
-        case .halfTypeKind: return HalfType(typeRef: self, context: ty.getTypeContext)
-        case .floatTypeKind: return FloatType(typeRef: self, context: ty.getTypeContext)
-        case .doubleTypeKind: return DoubleType(typeRef: self, context: ty.getTypeContext)
-        case .x86_FP80TypeKind: return X86FP80Type(typeRef: self, context: ty.getTypeContext)
-        case .fp128TypeKind: return FP128Type(typeRef: self, context: ty.getTypeContext)
-        case .ppc_FP128TypeKind: return PPCFP128Type(typeRef: self, context: ty.getTypeContext)
-        case .labelTypeKind: return LabelType(typeRef: self, context: ty.getTypeContext)
-        case .functionTypeKind:
+        case .VoidTypeKind: return VoidType(typeRef: self, context: ty.getTypeContext)
+        case .HalfTypeKind: return HalfType(typeRef: self, context: ty.getTypeContext)
+        case .FloatTypeKind: return FloatType(typeRef: self, context: ty.getTypeContext)
+        case .DoubleTypeKind: return DoubleType(typeRef: self, context: ty.getTypeContext)
+        case .X86_FP80TypeKind: return X86FP80Type(typeRef: self, context: ty.getTypeContext)
+        case .FP128TypeKind: return FP128Type(typeRef: self, context: ty.getTypeContext)
+        case .PPC_FP128TypeKind: return PPCFP128Type(typeRef: self, context: ty.getTypeContext)
+        case .LabelTypeKind: return LabelType(typeRef: self, context: ty.getTypeContext)
+        case .FunctionTypeKind:
             let paramTypes = FunctionType.getParamTypes(funcType: self)
             let returnTy = FunctionType.getReturnType(funcType: self)
             let isVarArg = FunctionType.isFunctionVarArg(funcType: self)
             return FunctionType(returnType: returnTy, parameterTypes: paramTypes, isVariadic: isVarArg)
-        case .structTypeKind: return StructType(typeRef: self)
-        case .arrayTypeKind: return ArrayType(typeRef: self)
-        case .pointerTypeKind:
+        case .StructTypeKind: return StructType(typeRef: self)
+        case .ArrayTypeKind: return ArrayType(typeRef: self)
+        case .PointerTypeKind:
             let pointee = PointerType.getElementType(typeRef: self)!
             let addressSpace = PointerType.getPointerAddressSpace(typeRef: self)
             return PointerType(pointee: pointee, addressSpace: addressSpace)
-        case .vectorTypeKind: return VectorType(typeRef: self)
-        case .metadataTypeKind: return MetadataType(typeRef: self, context: ty.getTypeContext)
-        case .x86_MMXTypeKind: return X86MMXType(typeRef: self, context: ty.getTypeContext)
-        case .tokenTypeKind: return TokenType(typeRef: self, context: ty.getTypeContext)
-        case .scalableVectorTypeKind: return ScalableVectorType(typeRef: self)
-        case .bFloatTypeKind: return BFloatType(typeRef: self, context: ty.getTypeContext)
-        case .x86_AMXTypeKind: return X86AMXType(typeRef: self, context: ty.getTypeContext)
-        case .targetExtTypeKind: return TargetExtType(typeRef: self, context: ty.getTypeContext)
+        case .VectorTypeKind: return VectorType(typeRef: self)
+        case .MetadataTypeKind: return MetadataType(typeRef: self, context: ty.getTypeContext)
+        case .X86_MMXTypeKind: return X86MMXType(typeRef: self, context: ty.getTypeContext)
+        case .TokenTypeKind: return TokenType(typeRef: self, context: ty.getTypeContext)
+        case .ScalableVectorTypeKind: return ScalableVectorType(typeRef: self)
+        case .BFloatTypeKind: return BFloatType(typeRef: self, context: ty.getTypeContext)
+        case .X86_AMXTypeKind: return X86AMXType(typeRef: self, context: ty.getTypeContext)
+        case .TargetExtTypeKind: return TargetExtType(typeRef: self, context: ty.getTypeContext)
         }
     }
 }
@@ -155,57 +155,6 @@ public protocol ValueRef {
     var valueRef: LLVMValueRef { get }
 }
 
-public enum TypeKind {
-    case voidTypeKind /** < type with no size */
-    case halfTypeKind /** < 16 bit floating point type */
-    case floatTypeKind /** < 32 bit floating point type */
-    case doubleTypeKind /** < 64 bit floating point type */
-    case x86_FP80TypeKind /** < 80 bit floating point type (X87) */
-    case fp128TypeKind /** < 128 bit floating point type (112-bit mantissa) */
-    case ppc_FP128TypeKind /** < 128 bit floating point type (two 64-bits) */
-    case labelTypeKind /** < Labels */
-    case integerTypeKind /** < Arbitrary bit width integers */
-    case functionTypeKind /** < Functions */
-    case structTypeKind /** < Structures */
-    case arrayTypeKind /** < Arrays */
-    case pointerTypeKind /** < Pointers */
-    case vectorTypeKind /** < Fixed width SIMD vector type */
-    case metadataTypeKind /** < Metadata */
-    case x86_MMXTypeKind /** < X86 MMX */
-    case tokenTypeKind /** < Tokens */
-    case scalableVectorTypeKind /** < Scalable SIMD vector type */
-    case bFloatTypeKind /** < 16 bit brain floating point type */
-    case x86_AMXTypeKind /** < X86 AMX */
-    case targetExtTypeKind /** < Target extension type */
-
-    public init?(ty: LLVMTypeKind) {
-        switch ty {
-        case LLVMVoidTypeKind: self = .voidTypeKind
-        case LLVMHalfTypeKind: self = .halfTypeKind
-        case LLVMFloatTypeKind: self = .floatTypeKind
-        case LLVMDoubleTypeKind: self = .doubleTypeKind
-        case LLVMX86_FP80TypeKind: self = .x86_FP80TypeKind
-        case LLVMFP128TypeKind: self = .fp128TypeKind
-        case LLVMPPC_FP128TypeKind: self = .ppc_FP128TypeKind
-        case LLVMLabelTypeKind: self = .labelTypeKind
-        case LLVMIntegerTypeKind: self = .integerTypeKind
-        case LLVMFunctionTypeKind: self = .functionTypeKind
-        case LLVMStructTypeKind: self = .structTypeKind
-        case LLVMArrayTypeKind: self = .arrayTypeKind
-        case LLVMPointerTypeKind: self = .pointerTypeKind
-        case LLVMVectorTypeKind: self = .vectorTypeKind
-        case LLVMMetadataTypeKind: self = .metadataTypeKind
-        case LLVMX86_MMXTypeKind: self = .x86_MMXTypeKind
-        case LLVMTokenTypeKind: self = .tokenTypeKind
-        case LLVMScalableVectorTypeKind: self = .scalableVectorTypeKind
-        case LLVMBFloatTypeKind: self = .bFloatTypeKind
-        case LLVMX86_AMXTypeKind: self = .x86_AMXTypeKind
-        case LLVMTargetExtTypeKind: self = .targetExtTypeKind
-        default: return nil
-        }
-    }
-}
-
 public struct Types: TypeRef {
     let llvm: LLVMTypeRef
 
@@ -224,7 +173,7 @@ public struct Types: TypeRef {
 
     /// Obtain the enumerated type of a Type instance.
     public var getTypeKind: TypeKind {
-        TypeKind(ty: LLVMGetTypeKind(typeRef))!
+        TypeKind(from: LLVMGetTypeKind(typeRef))!
     }
 
     /// Whether the type has a known size.
@@ -252,4 +201,133 @@ public struct Types: TypeRef {
 public extension Bool {
     /// Get  `LLVM` representation for Boolean type
     var llvm: Int32 { self ? 1 : 0 }
+}
+
+/// Declarations for `LLVMOpcode`
+public enum Opcode: UInt32 {
+    /* Terminator Instructions */
+    case Ret = 1
+    case Br = 2
+    case Switch = 3
+    case IndirectBr = 4
+    case Invoke = 5
+    /* removed 6 due to API changes */
+    case Unreachable = 7
+    case CallBr = 67
+
+    /* Standard Unary Operators */
+    case FNeg = 66
+
+    /* Standard Binary Operators */
+    case Add = 8
+    case FAdd = 9
+    case Sub = 10
+    case FSub = 11
+    case Mul = 12
+    case FMul = 13
+    case UDiv = 14
+    case SDiv = 15
+    case FDiv = 16
+    case URem = 17
+    case SRem = 18
+    case FRem = 19
+
+    /* Logical Operators */
+    case Shl = 20
+    case LShr = 21
+    case AShr = 22
+    case And = 23
+    case Or = 24
+    case Xor = 25
+
+    /* Memory Operators */
+    case Alloca = 26
+    case Load = 27
+    case Store = 28
+    case GetElementPtr = 29
+
+    /* Cast Operators */
+    case Trunc = 30
+    case ZExt = 31
+    case SExt = 32
+    case FPToUI = 33
+    case FPToSI = 34
+    case UIToFP = 35
+    case SIToFP = 36
+    case FPTrunc = 37
+    case FPExt = 38
+    case PtrToInt = 39
+    case IntToPtr = 40
+    case BitCast = 41
+    case AddrSpaceCast = 60
+
+    /* Other Operators */
+    case ICmp = 42
+    case FCmp = 43
+    case PHI = 44
+    case Call = 45
+    case Select = 46
+    case UserOp1 = 47
+    case UserOp2 = 48
+    case AArg = 49
+    case ExtractElement = 50
+    case InsertElement = 51
+    case ShuffleVector = 52
+    case ExtractValue = 53
+    case InsertValue = 54
+    case Freeze = 68
+
+    /* Atomic operators */
+    case Fence = 55
+    case AtomicCmpXchg = 56
+    case AtomicRMW = 57
+
+    /* Exception Handling Operators */
+    case Resume = 58
+    case LandingPad = 59
+    case CleanupRet = 61
+    case CatchRet = 62
+    case CatchPad = 63
+    case CleanupPad = 64
+    case CatchSwitch = 65
+
+    /// Init enum from `LLVMOpcode`
+    public init?(from val: LLVMOpcode) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMOpcode` from current type
+    public var llvm: LLVMOpcode { LLVMOpcode(rawValue: rawValue) }
+}
+
+public enum TypeKind: UInt32 {
+    case VoidTypeKind = 0 /** < type with no size */
+    case HalfTypeKind /** < 16 bit floating point type */
+    case FloatTypeKind /** < 32 bit floating point type */
+    case DoubleTypeKind /** < 64 bit floating point type */
+    case X86_FP80TypeKind /** < 80 bit floating point type (X87) */
+    case FP128TypeKind /** < 128 bit floating point type (112-bit mantissa) */
+    case PPC_FP128TypeKind /** < 128 bit floating point type (two 64-bits) */
+    case LabelTypeKind /** < Labels */
+    case IntegerTypeKind /** < Arbitrary bit width integers */
+    case FunctionTypeKind /** < Functions */
+    case StructTypeKind /** < Structures */
+    case ArrayTypeKind /** < Arrays */
+    case PointerTypeKind /** < Pointers */
+    case VectorTypeKind /** < Fixed width SIMD vector type */
+    case MetadataTypeKind /** < Metadata */
+    case X86_MMXTypeKind /** < X86 MMX */
+    case TokenTypeKind /** < Tokens */
+    case ScalableVectorTypeKind /** < Scalable SIMD vector type */
+    case BFloatTypeKind /** < 16 bit brain floating point type */
+    case X86_AMXTypeKind /** < X86 AMX */
+    case TargetExtTypeKind /** < Target extension type */
+
+    /// Init enum from `LLVMTypeKind`
+    public init?(from ty: LLVMTypeKind) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMTypeKind` from current type
+    public var llvm: LLVMTypeKind { LLVMTypeKind(rawValue: rawValue) }
 }
