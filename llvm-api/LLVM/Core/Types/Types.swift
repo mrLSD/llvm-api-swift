@@ -331,3 +331,126 @@ public enum TypeKind: UInt32 {
     /// Get `LLVMTypeKind` from current type
     public var llvm: LLVMTypeKind { LLVMTypeKind(rawValue: rawValue) }
 }
+
+public enum Linkage: UInt32 {
+    case ExternalLinkage = 0 /** < Externally visible function */
+    case AvailableExternallyLinkage
+    case LinkOnceAnyLinkage /** < Keep one copy of function when linking (inline) */
+    case LinkOnceODRLinkage /** < Same, but only replaced by something  equivalent. */
+    case LinkOnceODRAutoHideLinkage /** < Obsolete */
+    case WeakAnyLinkage /** < Keep one copy of function when linking (weak) */
+    case WeakODRLinkage /** < Same, but only replaced by  equivalent. */
+    case AppendingLinkage /** < Special purpose, only applies to global arrays */
+    case InternalLinkage /** < Rename collisions when linking   functions) */
+    case PrivateLinkage /** < Like Internal, but omit from symbol table */
+    case DLLImportLinkage /** < Obsolete */
+    case DLLExportLinkage /** < Obsolete */
+    case ExternalWeakLinkage /** < ExternalWeak linkage description */
+    case GhostLinkage /** < Obsolete */
+    case CommonLinkage /** < Tentative definitions */
+    case LinkerPrivateLinkage /** < Like Private, but linker removes. */
+    case LinkerPrivateWeakLinkage /** < Like LinkerPrivate, but is weak. */
+
+    /// Init enum from `LLVMLinkage`
+    public init?(from ty: LLVMLinkage) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMLinkage` from current type
+    public var llvm: LLVMLinkage { LLVMLinkage(rawValue: rawValue) }
+}
+
+public enum Visibility: UInt32 {
+    case DefaultVisibility = 0 /** < The GV is visible */
+    case HiddenVisibility /** < The GV is hidden */
+    case ProtectedVisibility /** < The GV is protected */
+
+    /// Init enum from `LLVMTVisibility`
+    public init?(from ty: LLVMVisibility) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMTypeKind` from current type
+    public var llvm: LLVMVisibility { LLVMVisibility(rawValue: rawValue) }
+}
+
+public enum UnnamedAddr: UInt32 {
+    case NoUnnamedAddr = 0 /** < Address of the GV is significant. */
+    case LocalUnnamedAddr /** < Address of the GV is locally insignificant. */
+    case GlobalUnnamedAddr /** < Address of the GV is globally insignificant. */
+
+    /// Init enum from `LLVMUnnamedAddr`
+    public init?(from ty: LLVMUnnamedAddr) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMUnnamedAddr` from current type
+    public var llvm: LLVMUnnamedAddr { LLVMUnnamedAddr(rawValue: rawValue) }
+}
+
+public enum DLLStorageClass: UInt32 {
+    case DefaultStorageClass = 0
+    case DLLImportStorageClass = 1 /** < Function to be imported from DLL. */
+    case DLLExportStorageClass = 2 /** < Function to be accessible from DLL. */
+
+    /// Init enum from `LLVMDLLStorageClass`
+    public init?(from ty: LLVMDLLStorageClass) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMDLLStorageClass` from current type
+    public var llvm: LLVMDLLStorageClass { LLVMDLLStorageClass(rawValue: rawValue) }
+}
+
+public enum CallConv: UInt32 {
+    case CCallConv = 0
+    case FastCallConv = 8
+    case ColdCallConv = 9
+    case GHCCallConv = 10
+    case HiPECallConv = 11
+    case WebKitJSCallConv = 12
+    case AnyRegCallConv = 13
+    case PreserveMostCallConv = 14
+    case PreserveAllCallConv = 15
+    case SwiftCallConv = 16
+    case CXXFASTTLSCallConv = 17
+    case X86StdcallCallConv = 64
+    case X86FastcallCallConv = 65
+    case ARMAPCSCallConv = 66
+    case ARMAAPCSCallConv = 67
+    case ARMAAPCSVFPCallConv = 68
+    case MSP430INTRCallConv = 69
+    case X86ThisCallCallConv = 70
+    case PTXKernelCallConv = 71
+    case PTXDeviceCallConv = 72
+    case SPIRFUNCCallConv = 75
+    case SPIRKERNELCallConv = 76
+    case IntelOCLBICallConv = 77
+    case X8664SysVCallConv = 78
+    case Win64CallConv = 79
+    case X86VectorCallCallConv = 80
+    case HHVMCallConv = 81
+    case HHVMCCallConv = 82
+    case X86INTRCallConv = 83
+    case AVRINTRCallConv = 84
+    case AVRSIGNALCallConv = 85
+    case AVRBUILTINCallConv = 86
+    case AMDGPUVSCallConv = 87
+    case AMDGPUGSCallConv = 88
+    case AMDGPUPSCallConv = 89
+    case AMDGPUCSCallConv = 90
+    case AMDGPUKERNELCallConv = 91
+    case X86RegCallCallConv = 92
+    case AMDGPUHSCallConv = 93
+    case MSP430BUILTINCallConv = 94
+    case AMDGPULSCallConv = 95
+    case AMDGPUESCallConv = 96
+
+    /// Init enum from `LLVMCallConv`
+    public init?(from ty: LLVMCallConv) {
+        self.init(rawValue: ty.rawValue)
+    }
+
+    /// Get `LLVMCallConv` from current type
+    public var llvm: LLVMCallConv { LLVMCallConv(rawValue: rawValue) }
+}
