@@ -66,7 +66,7 @@ public struct StructType: TypeRef {
 
     /// Determine whether a structure is opaque.
     public static func isOpaqueStruct(typeRef: TypeRef) -> Bool {
-        return LLVMIsOpaqueStruct(typeRef.typeRef) != 0
+        LLVMIsOpaqueStruct(typeRef.typeRef) != 0
     }
 
     /// Determine whether a structure is packed.
@@ -169,6 +169,6 @@ public struct StructType: TypeRef {
 
 extension StructType: Equatable {
     public static func == (lhs: StructType, rhs: StructType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

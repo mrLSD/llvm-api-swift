@@ -87,6 +87,6 @@ public struct PointerType: TypeRef {
 
 extension PointerType: Equatable {
     public static func == (lhs: PointerType, rhs: PointerType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

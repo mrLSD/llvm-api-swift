@@ -77,6 +77,6 @@ public struct FunctionType: TypeRef {
 
 extension FunctionType: Equatable {
     public static func == (lhs: FunctionType, rhs: FunctionType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

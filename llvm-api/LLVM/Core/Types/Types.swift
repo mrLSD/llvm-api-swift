@@ -324,8 +324,8 @@ public enum TypeKind: UInt32 {
     case TargetExtTypeKind /** < Target extension type */
 
     /// Init enum from `LLVMTypeKind`
-    public init?(from ty: LLVMTypeKind) {
-        self.init(rawValue: ty.rawValue)
+    public init?(from val: LLVMTypeKind) {
+        self.init(rawValue: val.rawValue)
     }
 
     /// Get `LLVMTypeKind` from current type
@@ -366,8 +366,8 @@ public enum Visibility: UInt32 {
     case ProtectedVisibility /** < The GV is protected */
 
     /// Init enum from `LLVMTVisibility`
-    public init?(from ty: LLVMVisibility) {
-        self.init(rawValue: ty.rawValue)
+    public init?(from val: LLVMVisibility) {
+        self.init(rawValue: val.rawValue)
     }
 
     /// Get `LLVMTypeKind` from current type
@@ -394,8 +394,8 @@ public enum DLLStorageClass: UInt32 {
     case DLLExportStorageClass = 2 /** < Function to be accessible from DLL. */
 
     /// Init enum from `LLVMDLLStorageClass`
-    public init?(from ty: LLVMDLLStorageClass) {
-        self.init(rawValue: ty.rawValue)
+    public init?(from val: LLVMDLLStorageClass) {
+        self.init(rawValue: val.rawValue)
     }
 
     /// Get `LLVMDLLStorageClass` from current type
@@ -447,10 +447,203 @@ public enum CallConv: UInt32 {
     case AMDGPUESCallConv = 96
 
     /// Init enum from `LLVMCallConv`
-    public init?(from ty: LLVMCallConv) {
-        self.init(rawValue: ty.rawValue)
+    public init?(from val: LLVMCallConv) {
+        self.init(rawValue: val.rawValue)
     }
 
     /// Get `LLVMCallConv` from current type
     public var llvm: LLVMCallConv { LLVMCallConv(rawValue: rawValue) }
+}
+
+public enum ValueKind: UInt32 {
+    case ArgumentValueKind = 0
+    case BasicBlockValueKind
+    case MemoryUseValueKind
+    case MemoryDefValueKind
+    case MemoryPhiValueKind
+
+    case FunctionValueKind
+    case GlobalAliasValueKind
+    case GlobalIFuncValueKind
+    case GlobalVariableValueKind
+    case lockAddressValueKind
+    case ConstantExprValueKind
+    case ConstantArrayValueKind
+    case ConstantStructValueKind
+    case ConstantVectorValueKind
+
+    case UndefValueValueKind
+    case ConstantAggregateZeroValueKind
+    case ConstantDataArrayValueKind
+    case ConstantDataVectorValueKind
+    case ConstantIntValueKind
+    case ConstantFPValueKind
+    case ConstantPointerNullValueKind
+    case ConstantTokenNoneValueKind
+
+    case MetadataAsValueValueKind
+    case InlineAsmValueKind
+
+    case InstructionValueKind
+    case PoisonValueValueKind
+    case ConstantTargetNoneValueKind
+
+    /// Init enum from `LLVMValueKind`
+    public init?(from val: LLVMValueKind) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMValueKind` from current type
+    public var llvm: LLVMValueKind { LLVMValueKind(rawValue: rawValue) }
+}
+
+public enum IntPredicate: UInt32 {
+    case IntEQ = 32 /** < equal */
+    case IntNE /** < not equal */
+    case IntUGT /** < unsigned greater than */
+    case IntUGE /** < unsigned greater or equal */
+    case IntULT /** < unsigned less than */
+    case IntULE /** < unsigned less or equal */
+    case IntSGT /** < signed greater than */
+    case IntSGE /** < signed greater or equal */
+    case IntSLT /** < signed less than */
+    case IntSLE /** < signed less or equal */
+
+    /// Init enum from `LLVMIntPredicate`
+    public init?(from val: LLVMIntPredicate) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMIntPredicate` from current type
+    public var llvm: LLVMIntPredicate { LLVMIntPredicate(rawValue: rawValue) }
+}
+
+public enum RealPredicate: UInt32 {
+    case RealPredicateFalse = 0 /** < Always false (always folded) */
+    case RealOEQ /** < True if ordered and equal */
+    case EealOGT /** < True if ordered and greater than */
+    case RealOGE /** < True if ordered and greater than or equal */
+    case RealOLT /** < True if ordered and less than */
+    case RealOLE /** < True if ordered and less than or equal */
+    case RealONE /** < True if ordered and operands are unequal */
+    case RealORD /** < True if ordered (no nans) */
+    case RealUNO /** < True if unordered: isnan(X) | isnan(Y) */
+    case RealUEQ /** < True if unordered or equal */
+    case RealUGT /** < True if unordered or greater than */
+    case RealUGE /** < True if unordered, greater than, or equal */
+    case RealULT /** < True if unordered or less than */
+    case RealULE /** < True if unordered, less than, or equal */
+    case RealUNE /** < True if unordered or not equal */
+    case RealPredicateTrue /** < Always true (always folded) */
+
+    /// Init enum from `LLVMRealPredicate`
+    public init?(from val: LLVMRealPredicate) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMRealPredicate` from current type
+    public var llvm: LLVMRealPredicate { LLVMRealPredicate(rawValue: rawValue) }
+}
+
+public enum LandingPadClauseTy: UInt32 {
+    case LandingPadCatch = 0 /** < A catch clause   */
+    case LandingPadFilter /** < A filter clause  */
+
+    /// Init enum from `LLVMLandingPadClauseTy`
+    public init?(from val: LLVMLandingPadClauseTy) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMLandingPadClauseTy` from current type
+    public var llvm: LLVMLandingPadClauseTy { LLVMLandingPadClauseTy(rawValue: rawValue) }
+}
+
+public enum ThreadLocalMode: UInt32 {
+    case NotThreadLocal = 0
+    case GeneralDynamicTLSModel
+    case LocalDynamicTLSModel
+    case InitialExecTLSModel
+    case LocalExecTLSModel
+
+    /// Init enum from `LLVMThreadLocalMode`
+    public init?(from val: LLVMThreadLocalMode) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMThreadLocalMode` from current type
+    public var llvm: LLVMThreadLocalMode { LLVMThreadLocalMode(rawValue: rawValue) }
+}
+
+public enum AtomicOrdering: UInt32 {
+    case AtomicOrderingNotAtomic = 0 /** < A load or store which is not atomic */
+    case AtomicOrderingUnordered = 1 /** < Lowest level of atomicity, guarantees
+     somewhat sane results, lock free. */
+    case AtomicOrderingMonotonic = 2 /** < guarantees that if you take all the
+     operations affecting a specific address,
+     a consistent ordering exists */
+    case AtomicOrderingAcquire = 4 /** < Acquire provides a barrier of the sort
+     necessary to acquire a lock to access other
+     memory with normal loads and stores. */
+    case AtomicOrderingRelease = 5 /** < Release is similar to Acquire, but with
+     a barrier of the sort necessary to release
+     a lock. */
+    case AtomicOrderingAcquireRelease = 6 /** < provides both an Acquire and a
+     Release barrier (for fences and
+     operations which both read and write
+     memory). */
+    case AtomicOrderingSequentiallyConsistent = 7 /** < provides Acquire semantics
+     for loads and Release
+     semantics for stores.
+     Additionally, it guarantees
+     that a total ordering exists
+     between all
+     SequentiallyConsistent
+     operations. */
+    /// Init enum from `LLVMAtomicOrdering`
+    public init?(from val: LLVMAtomicOrdering) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMAtomicOrdering` from current type
+    public var llvm: LLVMAtomicOrdering { LLVMAtomicOrdering(rawValue: rawValue) }
+}
+
+public enum AtomicRMWBinOp: UInt32 {
+    case AtomicRMWBinOpXchg = 0 /** < Set the new value and return the one old */
+    case AtomicRMWBinOpAdd /** < Add a value and return the old one */
+    case AtomicRMWBinOpSub /** < Subtract a value and return the old one */
+    case AtomicRMWBinOpAnd /** < And a value and return the old one */
+    case AtomicRMWBinOpNand /** < Not-And a value and return the old one */
+    case AtomicRMWBinOpOr /** < OR a value and return the old one */
+    case AtomicRMWBinOpXor /** < Xor a value and return the old one */
+    case AtomicRMWBinOpMax /** < Sets the value if it's greater than the original using a signed comparison and return the old one */
+    case AtomicRMWBinOpMin /** < Sets the value if it's Smaller than the original using a signed comparison and return the old one */
+    case AtomicRMWBinOpUMax /** < Sets the value if it's greater than the original using an unsigned comparison and return the old one */
+    case AtomicRMWBinOpUMin /** < Sets the value if it's greater than the original using an unsigned comparison and return the old one */
+    case AtomicRMWBinOpFAdd /** < Add a floating point value and return the old one */
+    case AtomicRMWBinOpFSub /** < Subtract a floating point value and return the old one */
+    case AtomicRMWBinOpFMax /** < Sets the value if it's greater than the original using an floating point comparison return the old one */
+    case AtomicRMWBinOpFMin /** < Sets the value if it's smaller than the original using an floating point comparison and  return the old one */
+    /// Init enum from `LLVMAtomicRMWBinOp`
+    public init?(from val: LLVMAtomicRMWBinOp) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMAtomicRMWBinOp` from current type
+    public var llvm: LLVMAtomicRMWBinOp { LLVMAtomicRMWBinOp(rawValue: rawValue) }
+}
+
+public enum DiagnosticSeverity: UInt32 {
+    case DSError = 0
+    case DSWarning
+    case DSRemark
+    case DSNote
+
+    /// Init enum from `LLVMDiagnosticSeverity`
+    public init?(from val: LLVMDiagnosticSeverity) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMDiagnosticSeverity` from current type
+    public var llvm: LLVMDiagnosticSeverity { LLVMDiagnosticSeverity(rawValue: rawValue) }
 }

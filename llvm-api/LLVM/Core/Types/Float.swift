@@ -152,6 +152,6 @@ public class PPCFP128Type: FloatingType {
 
 extension FloatingType: Equatable {
     public static func == (lhs: FloatingType, rhs: FloatingType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

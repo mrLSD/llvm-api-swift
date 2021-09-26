@@ -31,6 +31,6 @@ public struct LabelType: TypeRef {
 
 extension LabelType: Equatable {
     public static func == (lhs: LabelType, rhs: LabelType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

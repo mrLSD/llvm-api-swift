@@ -36,6 +36,6 @@ public struct X86MMXType: TypeRef {
 
 extension X86MMXType: Equatable {
     public static func == (lhs: X86MMXType, rhs: X86MMXType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

@@ -157,6 +157,6 @@ public class Int128Type: IntType {
 
 extension IntType: Equatable {
     public static func == (lhs: IntType, rhs: IntType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

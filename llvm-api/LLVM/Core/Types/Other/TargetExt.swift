@@ -37,6 +37,6 @@ public struct TargetExtType: TypeRef {
 
 extension TargetExtType: Equatable {
     public static func == (lhs: TargetExtType, rhs: TargetExtType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

@@ -360,6 +360,6 @@ public struct BasicBlock: BasicBlockRef {
 
 extension BasicBlock: Equatable {
     public static func == (lhs: BasicBlock, rhs: BasicBlock) -> Bool {
-        return lhs.basicBlockRef == rhs.basicBlockRef
+        lhs.basicBlockRef == rhs.basicBlockRef
     }
 }

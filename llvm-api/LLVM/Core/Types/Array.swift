@@ -107,6 +107,6 @@ public struct ArrayType: TypeRef {
 
 extension ArrayType: Equatable {
     public static func == (lhs: ArrayType, rhs: ArrayType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

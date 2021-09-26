@@ -21,13 +21,3 @@ public struct Diagnostic: DiagnosticInfoRef {
     }
 }
 
-public enum DiagnosticSeverity: Int {
-    case error = 0
-    case warning = 1
-    case remark = 2
-    case note = 3
-
-    public init?(from cSeverity: LLVMDiagnosticSeverity) {
-        self.init(rawValue: Int(cSeverity.rawValue))
-    }
-}

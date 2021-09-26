@@ -130,6 +130,6 @@ public struct Function: ValueRef {
 
 extension Function: Equatable {
     public static func == (lhs: Function, rhs: Function) -> Bool {
-        return lhs.valueRef == rhs.valueRef
+        lhs.valueRef == rhs.valueRef
     }
 }

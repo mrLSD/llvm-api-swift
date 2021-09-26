@@ -28,7 +28,7 @@ func run(_ path: String, args: [String] = []) -> String? {
 
 /// Finds the location of the provided binary on your system.
 func which(_ name: String) -> String? {
-    return run("/usr/bin/which", args: [name])
+    run("/usr/bin/which", args: [name])
 }
 
 extension String: Error {
@@ -37,7 +37,7 @@ extension String: Error {
     func replacing(charactersIn characterSet: CharacterSet,
                    with separator: String) -> String
     {
-        let components = self.components(separatedBy: characterSet)
+        let components = components(separatedBy: characterSet)
         return components.joined(separator: separator)
     }
 }
