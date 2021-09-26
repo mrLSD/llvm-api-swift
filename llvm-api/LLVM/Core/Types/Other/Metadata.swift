@@ -26,6 +26,6 @@ public struct MetadataType: TypeRef {
 
 extension MetadataType: Equatable {
     public static func == (lhs: MetadataType, rhs: MetadataType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

@@ -79,7 +79,7 @@ public class VectorType: TypeRef {
 
 extension VectorType: Equatable {
     public static func == (lhs: VectorType, rhs: VectorType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }
 

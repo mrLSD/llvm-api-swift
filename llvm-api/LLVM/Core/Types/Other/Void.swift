@@ -31,6 +31,6 @@ public struct VoidType: TypeRef {
 
 extension VoidType: Equatable {
     public static func == (lhs: VoidType, rhs: VoidType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

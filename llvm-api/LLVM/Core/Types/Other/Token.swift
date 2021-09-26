@@ -27,6 +27,6 @@ public struct TokenType: TypeRef {
 
 extension TokenType: Equatable {
     public static func == (lhs: TokenType, rhs: TokenType) -> Bool {
-        return lhs.typeRef == rhs.typeRef
+        lhs.typeRef == rhs.typeRef
     }
 }

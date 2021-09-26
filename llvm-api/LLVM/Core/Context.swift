@@ -58,7 +58,7 @@ public class Context: ContextRef {
 
     /// Retrieve whether the given context is set to discard all value names.
     public func shouldDiscardValueNames() -> Bool {
-        return LLVMContextShouldDiscardValueNames(llvm) != 0
+        LLVMContextShouldDiscardValueNames(llvm) != 0
     }
 
     /// Set whether the given context discards all value names.
@@ -76,7 +76,7 @@ public class Context: ContextRef {
     public var discardValueNames: Bool {
         get {
             // Retrieve whether the given context is set to discard all value names.
-            return shouldDiscardValueNames()
+            shouldDiscardValueNames()
         }
         set {
             // Set whether the given context discards all value names.
@@ -204,17 +204,17 @@ public class Context: ContextRef {
 
     /// Check for the  types of attributes.
     public static func isEnumAttribute(attributeRef: AttributeRef) -> Bool {
-        return LLVMIsEnumAttribute(attributeRef.attributeRef) != 0
+        LLVMIsEnumAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
     public static func isStringAttribute(attributeRef: AttributeRef) -> Bool {
-        return LLVMIsStringAttribute(attributeRef.attributeRef) != 0
+        LLVMIsStringAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Check for the  types of attributes.
     public static func isTypeAttribute(attributeRef: AttributeRef) -> Bool {
-        return LLVMIsTypeAttribute(attributeRef.attributeRef) != 0
+        LLVMIsTypeAttribute(attributeRef.attributeRef) != 0
     }
 
     /// Obtain a Type from a context by its registered name.

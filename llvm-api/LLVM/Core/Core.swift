@@ -30,7 +30,7 @@ enum Core {
     ///
     /// - SeeAlso: `disposeLLVMMessage`
     public static func createMessage(with message: String) -> UnsafeMutablePointer<CChar>? {
-        return message.withCString { cString in
+        message.withCString { cString in
             LLVMCreateMessage(cString)
         }
     }
@@ -43,7 +43,7 @@ enum Core {
     /// This function permanently loads the dynamic library at the given path.
     /// It is safe to call this function multiple times for the same library.
     public static func loadLibraryPermanently(filename: String) -> Bool {
-        return filename.withCString { cString in
+        filename.withCString { cString in
             LLVMLoadLibraryPermanently(cString) != 0
         }
     }
@@ -67,7 +67,7 @@ enum Core {
     /// libraries for the symbol `symbolName`. If it is found, the address of
     /// that symbol is returned. If not, null is returned.
     public static func searchForAddressOfSymbol(symbolName: String) -> UnsafeMutableRawPointer? {
-        return symbolName.withCString { cString in
+        symbolName.withCString { cString in
             LLVMSearchForAddressOfSymbol(cString)
         }
     }
