@@ -20,4 +20,3 @@ public struct Diagnostic: DiagnosticInfoRef {
         Context.getDiagInfoSeverity(diagnosticInfo: self)
     }
 }
-
