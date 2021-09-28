@@ -576,29 +576,21 @@ public enum ThreadLocalMode: UInt32 {
 
 public enum AtomicOrdering: UInt32 {
     case AtomicOrderingNotAtomic = 0 /** < A load or store which is not atomic */
-    case AtomicOrderingUnordered = 1 /** < Lowest level of atomicity, guarantees
-     somewhat sane results, lock free. */
-    case AtomicOrderingMonotonic = 2 /** < guarantees that if you take all the
-     operations affecting a specific address,
-     a consistent ordering exists */
-    case AtomicOrderingAcquire = 4 /** < Acquire provides a barrier of the sort
-     necessary to acquire a lock to access other
-     memory with normal loads and stores. */
-    case AtomicOrderingRelease = 5 /** < Release is similar to Acquire, but with
-     a barrier of the sort necessary to release
-     a lock. */
-    case AtomicOrderingAcquireRelease = 6 /** < provides both an Acquire and a
-     Release barrier (for fences and
-     operations which both read and write
-     memory). */
-    case AtomicOrderingSequentiallyConsistent = 7 /** < provides Acquire semantics
-     for loads and Release
-     semantics for stores.
-     Additionally, it guarantees
-     that a total ordering exists
-     between all
-     SequentiallyConsistent
-     operations. */
+    /// Lowest level of atomicity, guarantees somewhat sane results, lock free.
+    case AtomicOrderingUnordered = 1
+    /// guarantees that if you take all the operations affecting a specific address,  a consistent ordering exists
+    case AtomicOrderingMonotonic = 2
+    /// Acquire provides a barrier of the sort
+    /// necessary to acquire a lock to access other  memory with normal loads and stores.
+    case AtomicOrderingAcquire = 4
+    /// Release is similar to Acquire, but with a barrier of the sort necessary to release a lock.
+    case AtomicOrderingRelease = 5
+    /// provides both an Acquire and   Release barrier (for fences and  operations which both read and  memory).
+    case AtomicOrderingAcquireRelease = 6
+    /// provides Acquire semantics for loads and Release  semantics for stores.
+    /// Additionally, it guarantees that a total ordering exists  between
+    /// SequentiallyConsistent operations.
+    case AtomicOrderingSequentiallyConsistent = 7
     /// Init enum from `LLVMAtomicOrdering`
     public init?(from val: LLVMAtomicOrdering) {
         self.init(rawValue: val.rawValue)
@@ -646,4 +638,86 @@ public enum DiagnosticSeverity: UInt32 {
 
     /// Get `LLVMDiagnosticSeverity` from current type
     public var llvm: LLVMDiagnosticSeverity { LLVMDiagnosticSeverity(rawValue: rawValue) }
+}
+
+public enum InlineAsmDialect: UInt32 {
+    case InlineAsmDialectATT = 0
+    case InlineAsmDialectIntel
+
+    /// Init enum from `LLVMInlineAsmDialect`
+    public init?(from val: LLVMInlineAsmDialect) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMInlineAsmDialect` from current type
+    public var llvm: LLVMInlineAsmDialect { LLVMInlineAsmDialect(rawValue: rawValue) }
+}
+
+public enum ModuleFlagBehavior: UInt32 {
+    /// Emits an error if two values disagree, otherwise the resulting value is
+    /// that of the operands.
+    case ModuleFlagBehaviorError = 0
+
+    /// Emits a warning if two values disagree. The result value will be the
+    /// operand for the flag from the first module being linked.
+    case ModuleFlagBehaviorWarning
+
+    /// Adds a requirement that another module flag be present and have a
+    /// specified value after linking is performed. The value must be a metadata
+    /// pair, where the first element of the pair is the ID of the module flag
+    /// to be restricted, and the second element of the pair is the value the
+    /// module flag should be restricted to. This behavior can be used to
+    /// restrict the allowable results (via triggering of an error) of linking
+    /// IDs with the **Override** behavior.
+    case ModuleFlagBehaviorRequire
+
+    /// Uses the specified value, regardless of the behavior or value of the
+    /// other module. If both modules specify **Override**, but the values
+    /// differ, an error will be emitted.
+    case ModuleFlagBehaviorOverride
+
+    /// Appends the two values, which are required to be metadata nodes.
+    case ModuleFlagBehaviorAppend
+
+    /// Appends the two values, which are required to be metadata
+    /// nodes. However, duplicate entries in the second list are dropped
+    /// during the append operation.
+    case ModuleFlagBehaviorAppendUnique
+
+    /// Init enum from `LLVMModuleFlagBehavior`
+    public init?(from val: LLVMModuleFlagBehavior) {
+        self.init(rawValue: val.rawValue)
+    }
+
+    /// Get `LLVMModuleFlagBehavior` from current type
+    public var llvm: LLVMModuleFlagBehavior { LLVMModuleFlagBehavior(rawValue: rawValue) }
+}
+
+/// Attribute index is  parameter number from 1 to N.
+public struct AttributeIndex2 {
+    let llvm: LLVMAttributeIndex
+
+    public init?(from val: LLVMAttributeIndex) {
+        llvm = val
+    }
+
+    public init(index: UInt32) {
+        llvm = LLVMAttributeIndex(index)
+    }
+
+    /// Get attribute index
+    public var index: UInt32 { llvm }
+}
+
+/// `LLVMAttributeReturnIndex` is anonymous enum
+public struct AttributeReturnIndex {
+    public var llvm = LLVMAttributeReturnIndex
+}
+
+/// `LLVMAttributeFunctionIndex` is anonymous enum
+/// ISO C restricts enumerator values to range of 'int'
+/// (4294967295 is too large)
+/// LLVMAttributeFunctionIndex = ~0U,
+public struct AttributeFunctionIndex {
+    public var llvm = LLVMAttributeFunctionIndex
 }
