@@ -97,6 +97,12 @@ public struct BasicBlock: BasicBlockRef {
         self.context = context
     }
 
+    /// Create a new basic block without inserting it into a function.
+    public static func createBasicBlockInContext(context: Context, name: String) -> BasicBlockRef? {
+        guard let blockRef = LLVMCreateBasicBlockInContext(context.contextRef, name) else { return nil }
+        return BasicBlock(llvm: blockRef)
+    }
+
     /// Given that this block and a given block share a parent function, move this
     /// block before the given block in that function's basic block list.
     ///
@@ -146,7 +152,7 @@ public struct BasicBlock: BasicBlockRef {
     /// Returns the first instruction in the basic block, if it exists.
     public static func getFirstInstruction(basicBlock: BasicBlockRef) -> ValueRef? {
         guard let val = LLVMGetFirstInstruction(basicBlock.basicBlockRef) else { return nil }
-        return Values(llvm: val)
+        return Value(llvm: val)
     }
 
     /// Returns the first instruction in the basic block, if it exists.
@@ -157,7 +163,7 @@ public struct BasicBlock: BasicBlockRef {
     /// Returns the first instruction in the basic block, if it exists.
     public static func getLastInstruction(basicBlock: BasicBlockRef) -> ValueRef? {
         guard let val = LLVMGetLastInstruction(basicBlock.basicBlockRef) else { return nil }
-        return Values(llvm: val)
+        return Value(llvm: val)
     }
 
     /// Returns the parent function of this basic block, if it exists.
@@ -249,7 +255,7 @@ public struct BasicBlock: BasicBlockRef {
     /// Convert a basic block instance to a value type.
     public static func basicBlockAsValue(basicBlockRef: BasicBlockRef) -> ValueRef? {
         guard let valueRef = LLVMBasicBlockAsValue(basicBlockRef.basicBlockRef) else { return nil }
-        return Values(llvm: valueRef)
+        return Value(llvm: valueRef)
     }
 
     /// Determine whether an LLVMValueRef is itself a basic block.
@@ -347,14 +353,14 @@ public struct BasicBlock: BasicBlockRef {
     /// Returns the terminator instruction for current block. If a basic block is well formed or `nil` if it is not well formed.
     public var getBasicBlockTerminator: ValueRef? {
         guard let valueRef = LLVMGetBasicBlockTerminator(llvm) else { return nil }
-        return Values(llvm: valueRef)
+        return Value(llvm: valueRef)
     }
 
     /// Returns the terminator instruction if a basic block is well formed or `nil` if it is not well formed.
     /// The returned LLVMValueRef corresponds to an llvm::Instruction.
     public static func getBasicBlockTerminator(basicBlockRef: BasicBlockRef) -> ValueRef? {
         guard let valueRef = LLVMGetBasicBlockTerminator(basicBlockRef.basicBlockRef) else { return nil }
-        return Values(llvm: valueRef)
+        return Value(llvm: valueRef)
     }
 }
 

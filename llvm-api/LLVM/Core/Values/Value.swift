@@ -1,6 +1,6 @@
 import CLLVM
 
-public struct Values: ValueRef {
+public struct Value: ValueRef {
     let llvm: LLVMValueRef
 
     /// Retrieves the underlying LLVM type object.
