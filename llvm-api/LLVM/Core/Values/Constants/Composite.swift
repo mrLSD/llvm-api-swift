@@ -105,26 +105,42 @@ public enum CompositeConstant {
         return Value(llvm: valueRef)
     }
 
-    /**
-     * Create a non-anonymous ConstantStruct from values.
-     */
-    // LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy, LLVMValueRef *ConstantVals, unsigned Count);
+    /// Create a non-anonymous `ConstantStruct` from values.
+    public static func constNamedStruct(structType: TypeRef, constantValues: [ValueRef]) -> Value? {
+        let count = UInt32(constantValues.count)
+        let values = UnsafeMutablePointer<LLVMValueRef?>.allocate(capacity: Int(count))
+        defer {
+            values.deallocate()
+        }
 
-    /**
-     * Get element of a constant aggregate (struct, array or vector) at the
-     * specified index. Returns null if the index is out of range, or it's not
-     * possible to determine the element (e.g., because the constant is a
-     * constant expression.)
-     */
-    // LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C, unsigned Idx);
+        for (index, value) in constantValues.enumerated() {
+            values[index] = value.valueRef
+        }
+        guard let valueRef = LLVMConstNamedStruct(structType.typeRef, values, count) else { return nil }
+        return Value(llvm: valueRef)
+    }
 
-    /**
-     * Get an element at specified index as a constant.
-     */
-    // LLVM_ATTRIBUTE_C_DEPRECATED( LLVMValueRef LLVMGetElementAsConstant(LLVMValueRef C, unsigned idx), "Use LLVMGetAggregateElement instead");
+    /// Get element of a constant aggregate (struct, array or vector) at the
+    /// specified index. Returns null if the index is out of range, or it's not
+    /// possible to determine the element (e.g., because the constant is a
+    /// constant expression.)
+    public static func getAggregateElement(aggregate: ValueRef, index: UInt32) -> Value? {
+        guard let valueRef = LLVMGetAggregateElement(aggregate.valueRef, index) else { return nil }
+        return Value(llvm: valueRef)
+    }
 
-    /**
-     * Create a ConstantVector from values.
-     */
-    // LLVMValueRef LLVMConstVector(LLVMValueRef *ScalarConstantVals, unsigned Size);
+    /// Create a ConstantVector from values.
+    public static func constVector(scalarConstantValues: [ValueRef]) -> Value? {
+        let size = UInt32(scalarConstantValues.count)
+        let values = UnsafeMutablePointer<LLVMValueRef?>.allocate(capacity: Int(size))
+        defer {
+            values.deallocate()
+        }
+
+        for (index, value) in scalarConstantValues.enumerated() {
+            values[index] = value.valueRef
+        }
+        guard let valueRef = LLVMConstVector(values, size) else { return nil }
+        return Value(llvm: valueRef)
+    }
 }
