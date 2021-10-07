@@ -121,7 +121,7 @@ public enum ConstantExpressions {
         return Value(llvm: valueRef)
     }
 
-    func constGEP2(_ type: LLVMTypeRef, _ constantVal: LLVMValueRef, _ constantIndices: [LLVMValueRef], _ numIndices: UInt32) -> LLVMValueRef {
+    public func constGEP2(_ type: TypeRef, _ constantVal: ValueRef, _ constantIndices: [ValueRef], _ numIndices: UInt32) -> Value {
         let indices = UnsafeMutablePointer<LLVMValueRef?>.allocate(capacity: Int(numIndices))
         defer {
             indices.deallocate()
@@ -129,13 +129,14 @@ public enum ConstantExpressions {
 
         for (index, value) in constantIndices.enumerated() {
             guard index < numIndices else { break }
-            indices[index] = value
+            indices[index] = value.valueRef
         }
 
-        return LLVMConstGEP2(type, constantVal, indices, numIndices)
+        let valueRef = LLVMConstGEP2(type.typeRef, constantVal.valueRef, indices, numIndices)!
+        return Value(llvm: valueRef)
     }
 
-    func constInBoundsGEP2(_ type: LLVMTypeRef, _ constantVal: LLVMValueRef, _ constantIndices: [LLVMValueRef], _ numIndices: UInt32) -> LLVMValueRef {
+    public func constInBoundsGEP2(_ type: TypeRef, _ constantVal: ValueRef, _ constantIndices: [ValueRef], _ numIndices: UInt32) -> Value {
         let indices = UnsafeMutablePointer<LLVMValueRef?>.allocate(capacity: Int(numIndices))
         defer {
             indices.deallocate()
@@ -143,110 +144,135 @@ public enum ConstantExpressions {
 
         for (index, value) in constantIndices.enumerated() {
             guard index < numIndices else { break }
-            indices[index] = value
+            indices[index] = value.valueRef
         }
 
-        return LLVMConstInBoundsGEP2(type, constantVal, indices, numIndices)
+        let valueRef = LLVMConstInBoundsGEP2(type.typeRef, constantVal.valueRef, indices, numIndices)!
+        return Value(llvm: valueRef)
     }
 
-    func constTrunc(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstTrunc(constantVal, toType)
+    public func constTrunc(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstTrunc(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constSExt(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstSExt(constantVal, toType)
+    public func constSExt(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstSExt(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constZExt(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstZExt(constantVal, toType)
+    public func constZExt(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstZExt(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constFPTrunc(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstFPTrunc(constantVal, toType)
+    public func constFPTrunc(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstFPTrunc(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constFPExt(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstFPExt(constantVal, toType)
+    public func constFPExt(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstFPExt(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constUIToFP(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstUIToFP(constantVal, toType)
+    public func constUIToFP(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstUIToFP(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constSIToFP(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstSIToFP(constantVal, toType)
+    public func constSIToFP(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstSIToFP(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constFPToUI(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstFPToUI(constantVal, toType)
+    public func constFPToUI(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstFPToUI(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constFPToSI(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstFPToSI(constantVal, toType)
+    public func constFPToSI(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstFPToSI(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constPtrToInt(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstPtrToInt(constantVal, toType)
+    public func constPtrToInt(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstPtrToInt(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constIntToPtr(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstIntToPtr(constantVal, toType)
+    public func constIntToPtr(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstIntToPtr(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constBitCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstBitCast(constantVal, toType)
+    public func constBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstBitCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constAddrSpaceCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstAddrSpaceCast(constantVal, toType)
+    public func constAddrSpaceCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstAddrSpaceCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constZExtOrBitCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstZExtOrBitCast(constantVal, toType)
+    public func constZExtOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstZExtOrBitCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constSExtOrBitCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstSExtOrBitCast(constantVal, toType)
+    public func constSExtOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstSExtOrBitCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constTruncOrBitCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstTruncOrBitCast(constantVal, toType)
+    public func constTruncOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstTruncOrBitCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constPointerCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstPointerCast(constantVal, toType)
+    public func constPointerCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstPointerCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constIntCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef, _ isSigned: Bool) -> LLVMValueRef {
-        LLVMConstIntCast(constantVal, toType, LLVMBool(isSigned ? 1 : 0))
+    public func constIntCast(_ constantVal: ValueRef, _ toType: TypeRef, _ isSigned: Bool) -> Value {
+        let valueRef = LLVMConstIntCast(constantVal.valueRef, toType.typeRef, isSigned.llvm)!
+        return Value(llvm: valueRef)
     }
 
-    func constFPCast(_ constantVal: LLVMValueRef, _ toType: LLVMTypeRef) -> LLVMValueRef {
-        LLVMConstFPCast(constantVal, toType)
+    public func constFPCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+        let valueRef = LLVMConstFPCast(constantVal.valueRef, toType.typeRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constExtractElement(_ vectorConstant: LLVMValueRef, _ indexConstant: LLVMValueRef) -> LLVMValueRef {
-        LLVMConstExtractElement(vectorConstant, indexConstant)
+    public func constExtractElement(_ vectorConstant: ValueRef, _ indexConstant: ValueRef) -> Value {
+        let valueRef = LLVMConstExtractElement(vectorConstant.valueRef, indexConstant.valueRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constInsertElement(_ vectorConstant: LLVMValueRef, _ elementValueConstant: LLVMValueRef, _ indexConstant: LLVMValueRef) -> LLVMValueRef {
-        LLVMConstInsertElement(vectorConstant, elementValueConstant, indexConstant)
+    public func constInsertElement(_ vectorConstant: ValueRef, _ elementValueConstant: ValueRef, _ indexConstant: ValueRef) -> Value {
+        let valueRef = LLVMConstInsertElement(vectorConstant.valueRef, elementValueConstant.valueRef, indexConstant.valueRef)!
+        return Value(llvm: valueRef)
     }
 
-    func constShuffleVector(_ vectorAConstant: LLVMValueRef, _ vectorBConstant: LLVMValueRef, _ maskConstant: LLVMValueRef) -> LLVMValueRef {
-        LLVMConstShuffleVector(vectorAConstant, vectorBConstant, maskConstant)
+    public func constShuffleVector(_ vectorAConstant: ValueRef, _ vectorBConstant: ValueRef, _ maskConstant: ValueRef) -> Value {
+        let valueRef = LLVMConstShuffleVector(vectorAConstant.valueRef, vectorBConstant.valueRef, maskConstant.valueRef)!
+        return Value(llvm: valueRef)
     }
 
-    func blockAddress(_ function: LLVMValueRef, _ basicBlock: LLVMBasicBlockRef) -> LLVMValueRef {
-        LLVMBlockAddress(function, basicBlock)
+    public func blockAddress(_ function: ValueRef, _ basicBlock: BasicBlockRef) -> Value {
+        let valueRef = LLVMBlockAddress(function.valueRef, basicBlock.basicBlockRef)!
+        return Value(llvm: valueRef)
     }
 
     @available(*, deprecated, message: "Use LLVMGetInlineAsm instead")
-    func constInlineAsm(type: LLVMTypeRef, asmString: String, constraints: String, hasSideEffects: Bool, isAlignStack: Bool) -> LLVMValueRef {
-        asmString.withCString { asmStr in
+    public func constInlineAsm(type: TypeRef, asmString: String, constraints: String, hasSideEffects: Bool, isAlignStack: Bool) -> Value {
+        let valueRef = asmString.withCString { asmStr in
             constraints.withCString { consStr in
-                LLVMConstInlineAsm(type, asmStr, consStr, LLVMBool(hasSideEffects ? 1 : 0), LLVMBool(isAlignStack ? 1 : 0))
+                LLVMConstInlineAsm(type.typeRef, asmStr, consStr, hasSideEffects.llvm, isAlignStack.llvm)!
             }
         }
+        return Value(llvm: valueRef)
     }
 }
