@@ -24,7 +24,7 @@ jobs:
         echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
         source /Users/runner/.bash_profile
         clang --version
-	echo "=====> Checking LLC"
+        echo "=====> Checking LLC"
         llc --version
         swift --version
         swift utils/make-pkg-config.swift
