@@ -60,7 +60,7 @@ func makeFile() throws {
     let brewLLVMConfig = { which("\(brewPrefix)/opt/llvm/bin/llvm-config") }
 
     /// Ensure we have llvm-config in the PATH
-    guard let llvmConfig = which("llvm-config-11") ?? which("llvm-config") ?? brewLLVMConfig() else {
+    guard let llvmConfig = which("llvm-config-15") ?? which("llvm-config") ?? brewLLVMConfig() else {
         throw "Failed to find llvm-config. Ensure llvm-config is installed and " +
             "in your PATH"
     }
@@ -82,7 +82,7 @@ func makeFile() throws {
     let version = (components[0], components[1], components[2])
 
     guard version >= (11, 0, 0) else {
-        throw "LLVMSwift requires LLVM version >=11.0.0, but you have \(versionStr)"
+        throw "LLVMSwift requires LLVM version >=15.0.0, but you have \(versionStr)"
     }
 
     print("LLVM version is \(versionStr)")

@@ -18,7 +18,7 @@ jobs:
     - name: Pre-install
       run: |
         brew update
-        brew install llvm@17
+        brew install llvm@18
         echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
         echo 'export LDFLAGS="-L/usr/local/opt/llvm/lib"' >> /Users/runner/.bash_profile
         echo 'export CPPFLAGS="-I/usr/local/opt/llvm/include"' >> /Users/runner/.bash_profile
@@ -31,3 +31,4 @@ jobs:
       run: swift build -v
 #    - name: Run tests
 #      run: swift test -v
+
