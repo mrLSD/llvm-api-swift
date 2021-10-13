@@ -22,7 +22,7 @@ At the same time adhering to the principles of a safety and reliability implemen
 brew install llvm
 ```
 - Set Environment variables, that provided during `brew` llvm install
-- initialize `pkg-config`:
+- initializes `pkg-config`:
 ```
 ./utils/make-pkg-config.swift
 ```
@@ -32,14 +32,15 @@ brew install llvm
 ### Supported LLVM version
 
 - [x] v17.0
+- [x] v18.0
 
 
 ### Troubleshooting
 
-If `LLVM-C` head files during compulation doesn't found, make sure that you:
+If `LLVM-C` head files during compilation doesn't found, make sure that you are:
 - installed LLVM
 ```
-llv --version
+llc --version
 ```
 - Set environment variables for your terminal (for example in `.zshrc`). To get instruction about variables run:
 ```
