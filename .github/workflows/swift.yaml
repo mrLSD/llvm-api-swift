@@ -21,7 +21,7 @@ jobs:
         brew install llvm@18
         # Important: add empty string
         echo "" >> /Users/runner/.bash_profile
-        echo 'export PATH="/opt/homebrew/opt/bin:$PATH"' >> /Users/runner/.bash_profile
+        echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
         echo 'export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"' >> /Users/runner/.bash_profile
         echo 'export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"' >> /Users/runner/.bash_profile
         source /Users/runner/.bash_profile
