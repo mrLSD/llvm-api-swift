@@ -18,7 +18,7 @@ jobs:
     - name: Pre-install
       run: |
         brew update
-        brew install llvm@17
+        brew install llvm@18
         echo 'export PATH="/opt/homebrew/llvm/opt/bin:$PATH"' >> /Users/runner/.bash_profile
         echo 'export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"' >> /Users/runner/.bash_profile
         echo 'export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"' >> /Users/runner/.bash_profile
