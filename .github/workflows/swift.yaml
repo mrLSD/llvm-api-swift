@@ -26,6 +26,8 @@ jobs:
         echo 'export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"' >> /Users/runner/.bash_profile
         source /Users/runner/.bash_profile
         clang --version
+        cat /Users/runner/.bash_profile
+        whereis llc
         echo "=====> Checking LLC"
         llc --version
         swift --version
