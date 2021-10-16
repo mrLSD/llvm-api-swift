@@ -1,5 +1,6 @@
 import CLLVM
 
+/*
 /// Functions in this group correspond to APIs on `ConstantExpressions` .
 public enum ConstantExpressions {
     public static func getConstOpcode(constantVal: ValueRef) -> Opcode {
@@ -191,10 +192,10 @@ public enum ConstantExpressions {
         return Value(llvm: valueRef)
     }
 
-    public func constFPToSI(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
-        let valueRef = LLVMConstFPToSI(constantVal.valueRef, toType.typeRef)!
-        return Value(llvm: valueRef)
-    }
+//    public func constFPToSI(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+//        let valueRef = LLVMConstFPToSI(constantVal.valueRef, toType.typeRef)!
+//        return Value(llvm: valueRef)
+//    }
 
     public func constPtrToInt(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
         let valueRef = LLVMConstPtrToInt(constantVal.valueRef, toType.typeRef)!
@@ -216,10 +217,10 @@ public enum ConstantExpressions {
         return Value(llvm: valueRef)
     }
 
-    public func constZExtOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
-        let valueRef = LLVMConstZExtOrBitCast(constantVal.valueRef, toType.typeRef)!
-        return Value(llvm: valueRef)
-    }
+//    public func constZExtOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+//        let valueRef = LLVMConstZExtOrBitCast(constantVal.valueRef, toType.typeRef)!
+//        return Value(llvm: valueRef)
+//    }
 
     public func constSExtOrBitCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
         let valueRef = LLVMConstSExtOrBitCast(constantVal.valueRef, toType.typeRef)!
@@ -236,15 +237,15 @@ public enum ConstantExpressions {
         return Value(llvm: valueRef)
     }
 
-    public func constIntCast(_ constantVal: ValueRef, _ toType: TypeRef, _ isSigned: Bool) -> Value {
-        let valueRef = LLVMConstIntCast(constantVal.valueRef, toType.typeRef, isSigned.llvm)!
-        return Value(llvm: valueRef)
-    }
+//    public func constIntCast(_ constantVal: ValueRef, _ toType: TypeRef, _ isSigned: Bool) -> Value {
+//        let valueRef = LLVMConstIntCast(constantVal.valueRef, toType.typeRef, isSigned.llvm)!
+//        return Value(llvm: valueRef)
+//    }
 
-    public func constFPCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
-        let valueRef = LLVMConstFPCast(constantVal.valueRef, toType.typeRef)!
-        return Value(llvm: valueRef)
-    }
+//    public func constFPCast(_ constantVal: ValueRef, _ toType: TypeRef) -> Value {
+//        let valueRef = LLVMConstFPCast(constantVal.valueRef, toType.typeRef)!
+//        return Value(llvm: valueRef)
+//    }
 
     public func constExtractElement(_ vectorConstant: ValueRef, _ indexConstant: ValueRef) -> Value {
         let valueRef = LLVMConstExtractElement(vectorConstant.valueRef, indexConstant.valueRef)!
@@ -276,3 +277,5 @@ public enum ConstantExpressions {
         return Value(llvm: valueRef)
     }
 }
+ */
+
