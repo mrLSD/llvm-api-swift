@@ -18,7 +18,7 @@ jobs:
     - name: Pre-install
       run: |
         brew update
-        brew install llvm@18.1.8
+        brew install llvm@18
         # Important: add empty string
         echo "" >> /Users/runner/.bash_profile
         echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
