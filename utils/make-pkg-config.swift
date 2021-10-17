@@ -10,7 +10,7 @@ let libCPP = "-lc++"
 ///                   process.
 /// - returns: The standard output of the process, or nil if it was empty.
 func run(_ path: String, args: [String] = []) -> String? {
-    print("Running \(path) \(args.joined(separator: " "))...")
+    print("Run: \(path) \(args.joined(separator: " "))")
     let pipe = Pipe()
     let process = Process()
     process.executableURL = URL(fileURLWithPath: path)
@@ -60,7 +60,7 @@ func makeFile() throws {
     let brewLLVMConfig = { which("\(brewPrefix)/opt/llvm/bin/llvm-config") }
 
     /// Ensure we have llvm-config in the PATH
-    guard let llvmConfig = which("llvm-config-15") ?? which("llvm-config") ?? brewLLVMConfig() else {
+    guard let llvmConfig = which("llvm-config") ?? brewLLVMConfig() else {
         throw "Failed to find llvm-config. Ensure llvm-config is installed and " +
             "in your PATH"
     }
@@ -77,12 +77,6 @@ func makeFile() throws {
 
     guard components.count == 3 else {
         throw "Invalid version number \(versionStr)"
-    }
-
-    let version = (components[0], components[1], components[2])
-
-    guard version >= (11, 0, 0) else {
-        throw "LLVMSwift requires LLVM version >=15.0.0, but you have \(versionStr)"
     }
 
     print("LLVM version is \(versionStr)")
