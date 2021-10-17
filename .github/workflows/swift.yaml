@@ -18,7 +18,7 @@ jobs:
     - name: Pre-install
       run: |
         brew update
-        brew install llvm@18
+        brew install llvm@18.1.8
         # Important: add empty string
         echo "" >> /Users/runner/.bash_profile
         echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
@@ -27,7 +27,7 @@ jobs:
         source /Users/runner/.bash_profile
         clang --version
         swift --version
-        swift utils/make-pkg-config.swift
+#        swift utils/make-pkg-config.swift
 
     - name: Build
       run: swift build -v
