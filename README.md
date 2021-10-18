@@ -1,3 +1,6 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Swift CI](https://github.com/mrLSD/llvm-api-swift/actions/workflows/swift.yaml/badge.svg)](https://github.com/mrLSD/llvm-api-swift/actions/workflows/swift.yaml)
+
 # `llvm-api-swift`
 
 `llvm-api-swift` is a library representing Swift LLVM API, a pure Swift interface to the [LLVM API](https://llvm.org/docs/) and its associated libraries. 
@@ -14,22 +17,23 @@ At the same time adhering to the principles of a safety and reliability implemen
 
 
 ### Requirements
+
 - Supported OS: MacOS 12.0 or above
+
 - Swift lang: 5.9 or above
 
-- Install LLVM:
+- Install latest LLVM:
 ```
 brew install llvm
 ```
+
 - Set Environment variables, that provided during `brew` llvm install
-- initializes `pkg-config`:
-```
-./utils/make-pkg-config.swift
-```
 
-**NOTE:** Every time, when LLVM is updated or installed new version should be run `pkg-config` step.
+- You don't need additional configurations like `pkg-config` files, if your LLVM installation is correct and you successfully set environment variable.
 
-### Supported LLVM version
+:arrow_right: If you have problems, just check [Troubleshooting](#troubleshooting).
+
+### Supported LLVM versions
 
 - [x] v17.0
 - [x] v18.0
@@ -38,22 +42,17 @@ brew install llvm
 ### Troubleshooting
 
 If `LLVM-C` head files during compilation doesn't found, make sure that you are:
-- installed LLVM
+
+- installed LLVM correctly
 ```
 llc --version
 ```
+
 - Set environment variables for your terminal (for example in `.zshrc`). To get instruction about variables run:
 ```
 brew info llvm
 ```
-- run pkg-config utility:
-```
-./utils/make-pkg-config.swift
-```
-- if utility doesn't have access right to run:
-```
-chmod +x ./utils/make-pkg-config.swift
-./utils/make-pkg-config.swift
-```
+
+- To get more insights take a look current project [Github CI config](.github/workflows/swift.yaml).
 
 ### LICENS: [MIT](LICENSE)
