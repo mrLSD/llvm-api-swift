@@ -27,7 +27,6 @@ jobs:
         source /Users/runner/.bash_profile
         clang --version
         swift --version
-#        swift utils/make-pkg-config.swift
 
     - name: Build
       run: swift build -v

@@ -4,7 +4,8 @@
 import PackageDescription
 import Foundation
 
-let (cFlags, linkFlags) = try! getLLVMConfig()
+// Get LLVM flags and version
+let (cFlags, linkFlags, _version) = try! getLLVMConfig()
 
 let package = Package(
     name: "llvm-api",
@@ -31,7 +32,7 @@ let package = Package(
 )
 
 /// Get LLVM config flags
-func getLLVMConfig() throws -> ([String], [String]) {
+func getLLVMConfig() throws -> ([String], [String], [Int]) {
     let brewPrefix = {
         guard let brew = which("brew") else { return nil }
         return run(brew, args: ["--prefix"])
@@ -40,6 +41,12 @@ func getLLVMConfig() throws -> ([String], [String]) {
     guard let llvmConfig = which("llvm-config") ?? which("\(brewPrefix)/opt/llvm/bin/llvm-config") else {
         throw "Failed to find llvm-config. Ensure llvm-config is installed and in your PATH"
     }
+    // Fetch LLVM version
+    let versionStr = run(llvmConfig, args: ["--version"])!
+        .replacing(charactersIn: .newlines, with: "")
+        .replacingOccurrences(of: "svn", with: "")
+    let versionComponents = versionStr.components(separatedBy: ".")
+        .compactMap { Int($0) }
     // Get linkage (LD) flags
     let ldFlags = run(llvmConfig, args: ["--ldflags", "--libs", "all", "--system-libs"])!
         .replacing(charactersIn: .newlines, with: " ")
@@ -50,7 +57,7 @@ func getLLVMConfig() throws -> ([String], [String]) {
         .replacing(charactersIn: .newlines, with: "")
         .components(separatedBy: " ")
         .filter { $0.hasPrefix("-I") }
-    return (cFlags, ldFlags)
+    return (cFlags, ldFlags, versionComponents)
 }
 
 /// Runs the specified program at the provided path.
