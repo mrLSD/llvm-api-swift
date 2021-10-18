@@ -29,7 +29,7 @@ brew install llvm
 
 - Set Environment variables, that provided during `brew` llvm install
 
-- You don't need additional configurations like `pkg-config` files, if your LLVM installation is correct and you successfully set environment variable.
+- You don't need additional configurations like `pkg-config` files, if your LLVM installation is correct and you successfully set environment variables. `Package.swift` **automatically configure** all needed things to build correctly and you don't need care more.
 
 :arrow_right: If you have problems, just check [Troubleshooting](#troubleshooting).
 
