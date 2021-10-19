@@ -12,7 +12,7 @@ import CLLVM
 /// context, it is recommended that each thread of execution be assigned a unique
 /// context.  LLVM's core infrastructure and API provides no locking guarantees
 /// and no atomicity guarantees.
-public class Context: ContextRef {
+public final class Context: ContextRef {
     private let llvm: LLVMContextRef
 
     /// Retrieves the underlying LLVM type object.
@@ -185,20 +185,17 @@ public class Context: ContextRef {
     }
 
     /// Get the string attribute's kind.
-    public static func getStringAttributeKind(attributeRef: AttributeRef, length: UInt32) -> String? {
-        var mutLength = length
-        guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
-            LLVMGetStringAttributeKind(attributeRef.attributeRef, lengthPtr)
-        }) else { return nil }
+    public static func getStringAttributeKind(attributeRef: AttributeRef) -> String? {
+        var length: UInt32 = 0
+        guard let cString = LLVMGetStringAttributeKind(attributeRef.attributeRef, &length) else { return nil }
         return String(cString: cString)
     }
 
     /// Get the string attribute's value.
-    public static func getStringAttributeValue(attributeRef: AttributeRef, length: UInt32) -> String? {
-        var mutLength = length
-        guard let cString = withUnsafeMutablePointer(to: &mutLength, { lengthPtr in
-            LLVMGetStringAttributeValue(attributeRef.attributeRef, lengthPtr)
-        }) else { return nil }
+    public static func getStringAttributeValue(attributeRef: AttributeRef) -> String? {
+        var length: UInt32 = 0
+        guard let cString =
+            LLVMGetStringAttributeValue(attributeRef.attributeRef, &length) else { return nil }
         return String(cString: cString)
     }
 

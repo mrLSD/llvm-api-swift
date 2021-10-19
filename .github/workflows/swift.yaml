@@ -29,7 +29,7 @@ jobs:
         swift --version
 
     - name: Build
-      run: swift build -v
+      run: swift build -Xswiftc -DCLI_BUILD
 #    - name: Run tests
 #      run: swift test -v
 

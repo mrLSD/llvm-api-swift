@@ -1,11 +1,15 @@
 // swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import PackageDescription
 import Foundation
+import PackageDescription
 
 // Get LLVM flags and version
-let (cFlags, linkFlags, _version) = try! getLLVMConfig()
+#if CLI_BUILD
+    let (cFlags, linkFlags, _version) = try! getLLVMConfig()
+#else
+    let (cFlags, linkFlags, _version) = ([String](), [String](), [Int]())
+#endif
 
 let package = Package(
     name: "llvm-api",
@@ -15,17 +19,18 @@ let package = Package(
     targets: [
         .systemLibrary(
             name: "CLLVM",
-            path: "llvm-api/CLLVM"
+            path: "llvm-api/CLLVM",
+            pkgConfig: "cllvm"
         ),
         .target(
             name: "LLVM",
             dependencies: ["CLLVM"],
             path: "llvm-api/LLVM",
             cSettings: [
-                .unsafeFlags(cFlags)
+                .unsafeFlags(cFlags),
             ],
             linkerSettings: [
-                .unsafeFlags(linkFlags)
+                .unsafeFlags(linkFlags),
             ]
         ),
     ]
