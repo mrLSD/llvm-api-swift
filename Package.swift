@@ -7,8 +7,32 @@ import PackageDescription
 // Get LLVM flags and version
 #if CLI_BUILD
     let (cFlags, linkFlags, _version) = try! getLLVMConfig()
+    let customSystemLibrary: Target = .systemLibrary(
+        name: "CLLVM",
+        path: "llvm-api/CLLVM"
+    )
+    let llvmTarget: Target =  .target(
+        name: "LLVM",
+        dependencies: ["CLLVM"],
+        path: "llvm-api/LLVM",
+        cSettings: [
+            .unsafeFlags(cFlags),
+        ],
+        linkerSettings: [
+            .unsafeFlags(linkFlags),
+        ]
+    )
 #else
-    let (cFlags, linkFlags, _version) = ([String](), [String](), [Int]())
+    let customSystemLibrary: Target = .systemLibrary(
+        name: "CLLVM",
+        path: "llvm-api/CLLVM",
+        pkgConfig: "cllvm"
+    )
+    let llvmTarget: Target =  .target(
+        name: "LLVM",
+        dependencies: ["CLLVM"],
+        path: "llvm-api/LLVM"
+    )
 #endif
 
 let package = Package(
@@ -17,22 +41,8 @@ let package = Package(
         .library(name: "llvm-api", targets: ["LLVM"]),
     ],
     targets: [
-        .systemLibrary(
-            name: "CLLVM",
-            path: "llvm-api/CLLVM",
-            pkgConfig: "cllvm"
-        ),
-        .target(
-            name: "LLVM",
-            dependencies: ["CLLVM"],
-            path: "llvm-api/LLVM",
-            cSettings: [
-                .unsafeFlags(cFlags),
-            ],
-            linkerSettings: [
-                .unsafeFlags(linkFlags),
-            ]
-        ),
+        customSystemLibrary,
+        llvmTarget,
     ]
 )
 
