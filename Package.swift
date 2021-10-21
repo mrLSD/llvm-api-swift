@@ -4,46 +4,12 @@
 import Foundation
 import PackageDescription
 
-// Get LLVM flags and version
-#if CLI_BUILD
-    let (cFlags, linkFlags, _version) = try! getLLVMConfig()
-    let customSystemLibrary: Target = .systemLibrary(
-        name: "CLLVM",
-        path: "llvm-api/CLLVM"
-    )
-    let llvmTarget: Target =  .target(
-        name: "LLVM",
-        dependencies: ["CLLVM"],
-        path: "llvm-api/LLVM",
-        cSettings: [
-            .unsafeFlags(cFlags),
-        ],
-        linkerSettings: [
-            .unsafeFlags(linkFlags),
-        ]
-    )
-#else
-    let customSystemLibrary: Target = .systemLibrary(
-        name: "CLLVM",
-        path: "llvm-api/CLLVM",
-        pkgConfig: "cllvm"
-    )
-    let llvmTarget: Target =  .target(
-        name: "LLVM",
-        dependencies: ["CLLVM"],
-        path: "llvm-api/LLVM"
-    )
-#endif
-
 let package = Package(
     name: "llvm-api",
     products: [
         .library(name: "llvm-api", targets: ["LLVM"]),
     ],
-    targets: [
-        customSystemLibrary,
-        llvmTarget,
-    ]
+    targets: getTargets()
 )
 
 /// Get LLVM config flags
@@ -107,5 +73,44 @@ extension String: Error {
     {
         let components = components(separatedBy: characterSet)
         return components.joined(separator: separator)
+    }
+}
+
+/// Check Environ,ent variable
+func hasEnvironmentVariable(_ name: String) -> Bool {
+    ProcessInfo.processInfo.environment[name] != nil
+}
+
+func getTargets() -> [Target] {
+    if hasEnvironmentVariable("CLI_BUILD") {
+        let (cFlags, linkFlags, _) = try! getLLVMConfig()
+        let customSystemLibrary: Target = .systemLibrary(
+            name: "CLLVM",
+            path: "llvm-api/CLLVM"
+        )
+        let llvmTarget: Target = .target(
+            name: "LLVM",
+            dependencies: ["CLLVM"],
+            path: "llvm-api/LLVM",
+            cSettings: [
+                .unsafeFlags(cFlags),
+            ],
+            linkerSettings: [
+                .unsafeFlags(linkFlags),
+            ]
+        )
+        return [customSystemLibrary, llvmTarget]
+    } else {
+        let customSystemLibrary: Target = .systemLibrary(
+            name: "CLLVM",
+            path: "llvm-api/CLLVM",
+            pkgConfig: "cllvm"
+        )
+        let llvmTarget: Target = .target(
+            name: "LLVM",
+            dependencies: ["CLLVM"],
+            path: "llvm-api/LLVM"
+        )
+        return [customSystemLibrary, llvmTarget]
     }
 }
