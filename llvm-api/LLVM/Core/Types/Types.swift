@@ -71,9 +71,9 @@ public protocol ModuleRef {
     var moduleRef: LLVMModuleRef { get }
 }
 
-/// Represents an LLVM Named Metadata Node.
-public protocol NamedMDNodeRef {
-    var namedMDNodeRef: LLVMNamedMDNodeRef { get }
+/// Represents an LLVM Named Metadata Node (NamedMDNodeRef).
+public protocol  NamedMetadataNodeRef {
+    var namedMetadataNodeRef: LLVMNamedMDNodeRef { get }
 }
 
 public protocol OperandBundleRef {
