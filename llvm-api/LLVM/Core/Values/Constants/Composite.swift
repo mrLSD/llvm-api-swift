@@ -27,7 +27,7 @@ public enum CompositeConstant {
     }
 
     /// Get the given constant data sequential as a string.
-    public static func getString(value: ValueRef) -> (String, UInt) {
+    public static func getString(value: ValueRef) -> String? {
         var length: UInt = 0
         let lengthPtr = UnsafeMutablePointer<UInt>.allocate(capacity: 1)
         defer {
@@ -36,10 +36,9 @@ public enum CompositeConstant {
 
         if let cStr = LLVMGetAsString(value.valueRef, lengthPtr) {
             length = lengthPtr.pointee
-            let swiftStr = String(cString: cStr)
-            return (swiftStr, length)
+            return String(cString: cStr)
         } else {
-            return ("", 0)
+            return nil
         }
     }
 
