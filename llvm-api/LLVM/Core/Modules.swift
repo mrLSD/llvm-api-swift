@@ -468,15 +468,179 @@ public final class Module: ModuleRef {
     }
 
     /// Obtain the context to which this module is associated.
-    func getModuleContext() -> ContextRef {
+    public func getModuleContext() -> ContextRef {
         let context = LLVMGetModuleContext(llvm)
         return Context(llvm: context!)
     }
 
     /// Obtain an iterator to the first NamedMDNode in a Module.
-    func getFirstNamedMetadata() -> NamedMetadataNodeRef {
+    public func getFirstNamedMetadata() -> NamedMetadataNodeRef {
         let namedMD = LLVMGetFirstNamedMetadata(llvm)
         return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Obtain an iterator to the last NamedMDNode in a Module.
+    public func getLastNamedMetadata() -> NamedMetadataNodeRef {
+        let namedMD = LLVMGetLastNamedMetadata(llvm)
+        return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Advance a NamedMDNode iterator to the next NamedMDNode.
+    ///
+    /// Returns NULL if the iterator was already at the end and there are no more
+    /// named metadata nodes.
+    public func getNextNamedMetadata(namedMDNode: NamedMetadataNodeRef) -> NamedMetadataNodeRef {
+        let namedMD = LLVMGetNextNamedMetadata(namedMDNode.namedMetadataNodeRef)
+        return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Decrement a NamedMDNode iterator to the previous NamedMDNode.
+    ///
+    /// Returns NULL if the iterator was already at the beginning and there are
+    /// no previous named metadata nodes.
+    public func getPreviousNamedMetadata(namedMDNode: NamedMetadataNodeRef) -> NamedMetadataNodeRef {
+        let namedMD = LLVMGetPreviousNamedMetadata(namedMDNode.namedMetadataNodeRef)
+        return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Retrieve a NamedMDNode with the given name, returning NULL if no such
+    /// node exists.
+    public func getNamedMetadata(name: String) -> NamedMetadataNodeRef {
+        let namedMD = name.withCString { cString in
+            LLVMGetNamedMetadata(llvm, cString, name.utf8.count)
+        }
+        return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Retrieve a NamedMDNode with the given name, creating a new node if no such
+    /// node exists.
+    public func getOrInsertNamedMetadata(name: String) -> NamedMetadataNodeRef {
+        let namedMD = name.withCString { cString in
+            LLVMGetOrInsertNamedMetadata(llvm, cString, name.utf8.count)
+        }
+        return NamedMetadataNode(llvm: namedMD!)
+    }
+
+    /// Retrieve the name of a NamedMDNode.
+    public func getNamedMetadataName(namedMD: NamedMetadataNodeRef) -> String? {
+        var nameLen = 0
+        guard let cString = LLVMGetNamedMetadataName(namedMD.namedMetadataNodeRef, &nameLen) else {
+            return nil
+        }
+        return String(cString: cString)
+    }
+
+    /// Obtain the number of operands for named metadata in a module.
+    public func getNamedMetadataNumOperands(name: String) -> UInt32 {
+        name.withCString { cString in
+            LLVMGetNamedMetadataNumOperands(llvm, cString)
+        }
+    }
+
+    /// Obtain the named metadata operands for a module.
+    ///
+    /// The passed LLVMValueRef pointer should refer to an array of
+    /// LLVMValueRef at least LLVMGetNamedMetadataNumOperands long. This
+    /// array will be populated with the LLVMValueRef instances. Each
+    /// instance corresponds to a llvm::MDNode.
+    public func getNamedMetadataOperands(name: String) -> [ValueRef] {
+        let numOperands = getNamedMetadataNumOperands(name: name)
+        var operands = [LLVMValueRef?](repeating: nil, count: Int(numOperands))
+
+        operands.withUnsafeMutableBufferPointer { buffer in
+            name.withCString { cString in
+                LLVMGetNamedMetadataOperands(llvm, cString, buffer.baseAddress)
+            }
+        }
+
+        return operands.compactMap { Value(llvm: $0!) }
+    }
+
+    /// Add an operand to named metadata.
+    public func addNamedMetadataOperand(name: String, value: ValueRef) {
+        name.withCString { cString in
+            LLVMAddNamedMetadataOperand(llvm, cString, value.valueRef)
+        }
+    }
+
+    /// Return the directory of the debug location for this value, which must be
+    /// an llvm Instruction, llvm GlobalVariable, or llvm Function.
+    public func getDebugLocDirectory(value: ValueRef) -> String? {
+        var length: UInt32 = 0
+        guard let cString = LLVMGetDebugLocDirectory(value.valueRef, &length) else {
+            return nil
+        }
+        return String(cString: cString)
+    }
+
+    /// Return the filename of the debug location for this value, which must be
+    /// an llvm Instruction, llvm GlobalVariable, or llvm Function.
+    public func getDebugLocFilename(value: ValueRef) -> String? {
+        var length: UInt32 = 0
+        guard let cString = LLVMGetDebugLocFilename(value.valueRef, &length) else {
+            return nil
+        }
+        return String(cString: cString)
+    }
+
+    /// Return the line number of the debug location for this value, which must be
+    /// an llvm Instruction, llvm GlobalVariable, or llvm Function.
+    public func getDebugLocLine(value: ValueRef) -> UInt32 {
+        LLVMGetDebugLocLine(value.valueRef)
+    }
+
+    /// Return the column number of the debug location for this value, which must be
+    /// an llvm Instruction.
+    public func getDebugLocColumn(value: ValueRef) -> UInt32 {
+        LLVMGetDebugLocColumn(value.valueRef)
+    }
+
+    /// Add a function to a module under a specified name.
+    public func addFunction(name: String, functionType: TypeRef) -> ValueRef? {
+        guard let value = name.withCString({ cString in
+            LLVMAddFunction(llvm, cString, functionType.typeRef)
+        }) else { return nil }
+        return Value(llvm: value)
+    }
+
+    /// Obtain a Function value from a Module by its name.
+    ///
+    /// The returned value corresponds to a llvm::Function value.
+    public func getNamedFunction(name: String) -> ValueRef? {
+        guard let value = name.withCString({ cString in
+            LLVMGetNamedFunction(llvm, cString)
+        }) else { return nil }
+        return Value(llvm: value)
+    }
+
+    /// Obtain an iterator to the first Function in a Module.
+    public func getFirstFunction() -> ValueRef? {
+        guard let value = LLVMGetFirstFunction(llvm) else { return nil }
+        return Value(llvm: value)
+    }
+
+    /// Obtain an iterator to the last Function in a Module.
+    public func getLastFunction() -> ValueRef? {
+        guard let value = LLVMGetLastFunction(llvm) else { return nil }
+        return Value(llvm: value)
+    }
+
+    /// Advance a Function iterator to the next Function.
+    ///
+    /// Returns NULL if the iterator was already at the end and there are no more
+    /// functions.
+    public func getNextFunction(function: ValueRef) -> ValueRef? {
+        guard let value = LLVMGetNextFunction(function.valueRef) else { return nil }
+        return Value(llvm: value)
+    }
+
+    /// Decrement a Function iterator to the previous Function.
+    ///
+    /// Returns NULL if the iterator was already at the beginning and there are
+    /// no previous functions.
+    public func getPreviousFunction(function: ValueRef) -> ValueRef? {
+        guard let value = LLVMGetPreviousFunction(function.valueRef) else { return nil }
+        return Value(llvm: value)
     }
 
     /// Destroy a module instance.
