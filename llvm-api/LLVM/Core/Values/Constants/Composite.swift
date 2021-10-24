@@ -28,18 +28,11 @@ public enum CompositeConstant {
 
     /// Get the given constant data sequential as a string.
     public static func getString(value: ValueRef) -> String? {
-        var length: UInt = 0
-        let lengthPtr = UnsafeMutablePointer<UInt>.allocate(capacity: 1)
-        defer {
-            lengthPtr.deallocate()
-        }
-
-        if let cStr = LLVMGetAsString(value.valueRef, lengthPtr) {
-            length = lengthPtr.pointee
-            return String(cString: cStr)
-        } else {
+        var length: size_t = 0
+        guard let cString = LLVMGetAsString(value.valueRef, &length) else {
             return nil
         }
+        return String(cString: cString)
     }
 
     /// Create an anonymous `ConstantStruct` with the specified values.
