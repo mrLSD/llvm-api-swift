@@ -93,7 +93,6 @@ brew install llvm
 - [x] v17.0
 - [x] v18.0
 
-
 ### XCode support
 
 To develop correctly with XCode it's necessary to generate package-config: `llvm.pc`:
