@@ -39,6 +39,13 @@ brew install llvm
 - [x] v18.0
 
 
+### XCode support
+
+To develop correctly with XCode it's necessary to generate package-config: `llvm.pc`:
+- `sh utils/llvm-pkg.swift` - will generate package config and copy to your default `pkg-config` path.
+
+After that XCode should correctly recognize LLVM headers path, and can build project.
+
 ### Troubleshooting
 
 If `LLVM-C` head files during compilation doesn't found, make sure that you are:
@@ -53,6 +60,9 @@ llc --version
 brew info llvm
 ```
 
+- **conditional build**: `Package.swift` supports conditional builds:
+  - for CLI build: `CLI_BUILD swift build` - it get's LLVM veriabels form Environment sets.
+  - `swift build` - if presented `llvm.pc` package config
 - To get more insights take a look current project [Github CI config](.github/workflows/swift.yaml).
 
 ### LICENS: [MIT](LICENSE)
