@@ -222,7 +222,7 @@ public final class Context: ContextRef {
         }
     }
 
-    ///Destroy a context instance.
+    /// Destroy a context instance.
     ///
     /// This should be called for every call to LLVMContextCreate() or memory will be leaked.
     public func dispose() {
