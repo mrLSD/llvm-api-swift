@@ -11,7 +11,7 @@ import CLLVM
 /// These assumptions are not guaranteed to hold in any other address space.  In particular, a target may
 /// allow pointers in non-default address spaces to have *non-integral* types.  Non-integral pointer types
 /// represent pointers that have an unspecified bitwise representation; that is, the integral representation may
-/// be target dependent or have an unstable value.///  Further, outside of the default address space, it is not
+/// be target dependent or have an unstable value.  Further, outside of the default address space, it is not
 /// always the case that the `null` pointer value, especially as returned by
 /// `constPointerNull()` has a bit value of 0.  e.g. A non-default address space may use
 /// an offset-based or segment-based addressing mode in which 0 is a valid, addressable pointer value.

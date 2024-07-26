@@ -91,7 +91,7 @@ func getTargets() -> [Target] {
         let llvmTarget: Target = .target(
             name: "LLVM",
             dependencies: ["CLLVM"],
-            path: "llvm-api/LLVM",
+            // path: "llvm-api/LLVM",
             cSettings: [
                 .unsafeFlags(cFlags),
             ],
@@ -103,13 +103,13 @@ func getTargets() -> [Target] {
     } else {
         let customSystemLibrary: Target = .systemLibrary(
             name: "CLLVM",
-            path: "llvm-api/CLLVM",
-            pkgConfig: "cllvm"
+            // path: "llvm-api/CLLVM",
+            pkgConfig: "llvm"
         )
         let llvmTarget: Target = .target(
             name: "LLVM",
-            dependencies: ["CLLVM"],
-            path: "llvm-api/LLVM"
+            dependencies: ["CLLVM"]
+            // path: "llvm-api/LLVM"
         )
         return [customSystemLibrary, llvmTarget]
     }
