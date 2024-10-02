@@ -50,7 +50,7 @@ import CLLVM
 /// - The address space is ultimately an integer value and in theory an address space identifier may take on
 ///   any value.  In practice, LLVM guarantees only 24 bits of precision, though higher address space
 ///   identifiers may succeed in being properly represented.
-public struct AddressSpace: Equatable {
+public struct AddressSpace: Equatable, Sendable {
     let rawValue: UInt32
 
     /// LLVM's default address space.

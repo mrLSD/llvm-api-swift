@@ -12,6 +12,13 @@ let package = Package(
     targets: getTargets()
 )
 
+struct GetConfigError: Error {
+    let message: String
+    init(_ message: String) {
+        self.message = message
+    }
+}
+
 /// Get LLVM config flags
 func getLLVMConfig() throws -> ([String], [String], [Int]) {
     let brewPrefix = {
@@ -20,7 +27,7 @@ func getLLVMConfig() throws -> ([String], [String], [Int]) {
     }() ?? "/usr/local"
     /// Ensure we have llvm-config in the PATH
     guard let llvmConfig = which("llvm-config") ?? which("\(brewPrefix)/opt/llvm/bin/llvm-config") else {
-        throw "Failed to find llvm-config. Ensure llvm-config is installed and in your PATH"
+        throw GetConfigError("Failed to find llvm-config. Ensure llvm-config is installed and in your PATH")
     }
     // Fetch LLVM version
     let versionStr = run(llvmConfig, args: ["--version"])!
@@ -66,7 +73,7 @@ func which(_ name: String) -> String? {
     run("/usr/bin/which", args: [name])
 }
 
-extension String: Error {
+extension String {
     /// Replaces all occurrences of characters in the provided set with the provided string.
     func replacing(charactersIn characterSet: CharacterSet,
                    with separator: String) -> String
@@ -76,7 +83,7 @@ extension String: Error {
     }
 }
 
-/// Check Environ,ent variable
+/// Check Environment variable
 func hasEnvironmentVariable(_ name: String) -> Bool {
     ProcessInfo.processInfo.environment[name] != nil
 }
@@ -84,10 +91,10 @@ func hasEnvironmentVariable(_ name: String) -> Bool {
 func getTargets() -> [Target] {
     if hasEnvironmentVariable("CLI_BUILD") {
         let (cFlags, linkFlags, _) = try! getLLVMConfig()
-        let customSystemLibrary: Target = .systemLibrary(
+        let customSystemLibrary = Target.systemLibrary(
             name: "CLLVM"
         )
-        let llvmTarget: Target = .target(
+        let llvmTarget = Target.target(
             name: "LLVM",
             dependencies: ["CLLVM"],
             cSettings: [

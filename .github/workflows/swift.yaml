@@ -14,11 +14,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: swift-actions/setup-swift@v1
+    - uses: SwiftyLab/setup-swift@latest
     - name: Pre-install
       run: |
         brew update
-        brew install llvm@18
+        brew install llvm@19
         # Important: add empty string
         echo "" >> /Users/runner/.bash_profile
         echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile

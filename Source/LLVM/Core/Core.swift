@@ -1,4 +1,9 @@
 import CLLVM
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
 
 /// This modules provide an interface to libLLVMCore, which implements the LLVM intermediate representation as well
 /// as other related types and utilities.
