@@ -34,6 +34,7 @@ public final class Context: ContextRef {
     ///   recommended that each thread of execution attempting to access the LLVM
     ///   API have its own `Context` instance, rather than rely on this global
     ///   context.
+    @MainActor
     public static let global = Context(llvm: LLVMGetGlobalContext()!)
 
     /// Creates a new `Context` object.
@@ -222,7 +223,7 @@ public final class Context: ContextRef {
         }
     }
 
-    ///Destroy a context instance.
+    /// Destroy a context instance.
     ///
     /// This should be called for every call to LLVMContextCreate() or memory will be leaked.
     public func dispose() {
